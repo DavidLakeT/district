@@ -1,0 +1,27 @@
+/* Additional CSS styles for product cards */
+.card {
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.btn-primary {
+    width: 100%;
+}
+
+/* Center the product title */
+.card-title {
+    text-align: center;
+}
+
+/* Custom margin for the product container */
+#product-container {
+    margin-bottom: 40px;
+}
