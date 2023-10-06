@@ -1,52 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>District VulnWeb</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <style>
-    /* Add your custom styles here */
-  </style>
-</head>
+<html>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>District VulnWeb</title>
+      <script type="module" src="js/app.js"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  </head>
 <body>
-
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">District VulnWeb</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="products/products.html">Products</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Cart</a>
-        </li>
-      </ul>
-    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">District VulnWeb</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                  <a class="nav-link" href="#" data-route="home">Home</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#" data-route="products">Products</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="loadContent('contact')">Contact</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="loadContent('cart')">Cart</a>
+              </li>
+              |
+          </ul>
+      </div>
   </nav>
 
-  <div class="container mt-4">
-    <div class="jumbotron">
-      <h1 class="display-4">Welcome to District VulnWeb Platform</h1>
-      <p class="lead">Practice your cybersecurity skills by exploring and exploiting vulnerabilities in this e-commerce web application.</p>
-      <hr class="my-4">
-      <p>Get started by browsing our products:</p>
-      <a class="btn btn-primary btn-lg" href="#" role="button">Explore Products</a>
+    <div class="content" id="content">
+        <!-- Content will be loaded here -->
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white">
+      <div class="container">
+        <p class="text-center">&copy; 2023 My E-commerce</p>
+      </div>
+    </footer>
 
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="js/app.js" async></script>
 </body>
 </html>
