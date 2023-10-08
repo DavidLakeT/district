@@ -15,22 +15,10 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) CreateUser(user *models.User) error {
-	query := "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id"
-	err := r.db.QueryRow(
-		query,
-		user.Username,
-		user.Password).Scan(&user.ID)
-	if err != nil {
-		return fmt.Errorf("failed to create user: %w", err)
-	}
-	return nil
-}
-
-func (r *UserRepository) GetUserByID(id int) (*models.User, error) {
-	query := "SELECT id, username, password FROM users WHERE id = $1"
+func (r *UserRepository) GetUserByUsername(username string) (*models.User, error) {
+	query := "SELECT username, password FROM users WHERE username = $1"
 	user := &models.User{}
-	err := r.db.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Password)
+	err := r.db.QueryRow(query, username).Scan(&user.Username, &user.Password)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("user not found: %w", err)
@@ -40,18 +28,19 @@ func (r *UserRepository) GetUserByID(id int) (*models.User, error) {
 	return user, nil
 }
 
+// TO-DO: Fix logic on username handling
 func (r *UserRepository) UpdateUser(user *models.User) error {
-	query := "UPDATE users SET username = $1, password = $2 WHERE id = $3"
-	_, err := r.db.Exec(query, user.Username, user.Password, user.ID)
+	query := "UPDATE users SET username = $1, password = $2 WHERE username = $3"
+	_, err := r.db.Exec(query, user.Username, user.Password, user.Username)
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
 	}
 	return nil
 }
 
-func (r *UserRepository) DeleteUser(id int) error {
-	query := "DELETE FROM users WHERE id = $1"
-	_, err := r.db.Exec(query, id)
+func (r *UserRepository) DeleteUser(username string) error {
+	query := "DELETE FROM users WHERE username = $1"
+	_, err := r.db.Exec(query, username)
 	if err != nil {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
