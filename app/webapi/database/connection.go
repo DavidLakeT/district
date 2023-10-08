@@ -3,59 +3,28 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
-const (
-	dbPath = "./users.db"
-)
+func ConnectDatabase() (*sql.DB, error) {
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	username := os.Getenv("DB_USERNAME")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
 
-// User represents a user in the database
-type User struct {
-	ID       int
-	Username string
-	Password string
-}
+	connStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, username, password, dbname, port)
 
-// Connect creates a connection to the Users database
-func Connect() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err)
+		return nil, fmt.Errorf("Failed to connect to database: %v", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("Failed to ping database: %v", err)
 	}
 
 	return db, nil
-}
-
-// CreateUserTable creates the Users table in the database
-func CreateUserTable(db *sql.DB) error {
-	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS Users (
-		ID INTEGER PRIMARY KEY AUTOINCREMENT,
-		Username TEXT NOT NULL,
-		Password TEXT NOT NULL
-	)`)
-	if err != nil {
-		return fmt.Errorf("failed to create Users table: %v", err)
-	}
-
-	return nil
-}
-
-// AddUsers adds some sample users to the database
-func AddUsers(db *sql.DB) error {
-	users := []User{
-		{Username: "user1", Password: "password1"},
-		{Username: "user2", Password: "password2"},
-		{Username: "user3", Password: "password3"},
-	}
-
-	for _, user := range users {
-		_, err := db.Exec("INSERT INTO Users (Username, Password) VALUES (?, ?)", user.Username, user.Password)
-		if err != nil {
-			return fmt.Errorf("failed to add user %s: %v", user.Username, err)
-		}
-	}
-
-	return nil
 }
