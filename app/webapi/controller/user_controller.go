@@ -20,28 +20,10 @@ func NewUserController(userService *service.UserService) *UserController {
 	}
 }
 
-func (uc *UserController) Create(c echo.Context) error {
-	var user models.User
-	err := c.Bind(&user)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	err = uc.userService.CreateUser(&user)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.JSON(http.StatusCreated, user)
-}
-
 func (uc *UserController) Read(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
+	username := c.Param("username")
 
-	user, err := uc.userService.GetUserByID(id)
+	user, err := uc.userService.GetUserByUsername(username)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err.Error())
 	}
