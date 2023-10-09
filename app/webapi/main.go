@@ -34,5 +34,6 @@ func main() {
 
 	app := echo.New()
 	app.GET("api/user/:id", userController.UserInformation)
+	app.POST("api/user", userController.CreateUser)
 	app.Logger.Fatal(app.Start(":5000"))
 }

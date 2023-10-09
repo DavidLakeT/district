@@ -17,7 +17,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 
 func (r *UserRepository) CreateUser(user *models.User) error {
 	query := "INSERT INTO users (identification, email, username, password, address, balance) VALUES ($1, $2, $3, $4, $5, $6)"
-	err := r.db.QueryRow(query, user.Email, user.Username, user.Password, user.Address, user.Balance)
+	_, err := r.db.Exec(query, user.Identification, user.Email, user.Username, user.Password, user.Address, user.Balance)
 	if err != nil {
 		return fmt.Errorf("failed to create user: %w", err)
 	}
