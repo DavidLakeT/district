@@ -1,7 +1,7 @@
 package service
 
 import (
-	"district/models"
+	"district/model"
 	"district/repository"
 )
 
@@ -13,10 +13,10 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 	return &UserService{userRepository: userRepo}
 }
 
-func (s *UserService) GetUserByIdentification(identification int) (*models.User, error) {
+func (s *UserService) GetUserByIdentification(identification int) (*model.User, error) {
 	return s.userRepository.GetUserByIdentification(identification)
 }
 
-func (s *UserService) CreateUser(user *models.User) error {
+func (s *UserService) CreateUser(user *model.User) error {
 	return s.userRepository.CreateUser(user)
 }

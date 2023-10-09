@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	controller "district/controller/request"
-	"district/models"
+	models "district/model"
 	"district/service"
 
 	"github.com/labstack/echo/v4"

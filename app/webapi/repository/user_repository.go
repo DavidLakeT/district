@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"district/models"
+	"district/model"
 	"errors"
 	"fmt"
 )
@@ -15,7 +15,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) CreateUser(user *models.User) error {
+func (r *UserRepository) CreateUser(user *model.User) error {
 	query := "INSERT INTO users (identification, email, username, password, address, balance) VALUES ($1, $2, $3, $4, $5, $6)"
 	_, err := r.db.Exec(query, user.Identification, user.Email, user.Username, user.Password, user.Address, user.Balance)
 	if err != nil {
@@ -24,9 +24,9 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 	return nil
 }
 
-func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+func (r *UserRepository) GetUserByEmail(email string) (*model.User, error) {
 	query := "SELECT identification, email, username, password, address, balance FROM users WHERE email = $1"
-	user := &models.User{}
+	user := &model.User{}
 	err := r.db.QueryRow(query, email).Scan(
 		&user.Identification,
 		&user.Email,
@@ -43,9 +43,9 @@ func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) GetUserByIdentification(identification int) (*models.User, error) {
+func (r *UserRepository) GetUserByIdentification(identification int) (*model.User, error) {
 	query := "SELECT identification, email, username, password, address, balance FROM users WHERE identification = $1"
-	user := &models.User{}
+	user := &model.User{}
 	err := r.db.QueryRow(query, identification).Scan(
 		&user.Identification,
 		&user.Email,
