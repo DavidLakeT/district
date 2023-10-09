@@ -2,11 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"district/models"
-	"errors"
-	"time"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthRepository struct {
@@ -17,24 +12,12 @@ func NewAuthRepository(db *sql.DB) *AuthRepository {
 	return &AuthRepository{db: db}
 }
 
-func (r *AuthRepository) Signup(user *models.User) error {
-	var count int
-	err := r.db.QueryRow("SELECT COUNT(*) FROM users WHERE username = $1", user.Username).Scan(&count)
-	if err != nil {
-		return err
-	}
-	if count > 0 {
-		return errors.New("user already exists")
-	}
+/*
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+func (r *AuthRepository) Signup(user *models.User) (*models.User, error) {
+	_, err := r.db.Exec("INSERT INTO users (username, password, created_at) VALUES ($1, $2, $3)", user.Username, string(hashedPassword), time.Now())
 	if err != nil {
-		return err
-	}
-
-	_, err = r.db.Exec("INSERT INTO users (username, password, created_at) VALUES ($1, $2, $3)", user.Username, string(hashedPassword), time.Now())
-	if err != nil {
-		return err
+		return nil, err
 	}
 
 	return nil
@@ -57,3 +40,5 @@ func (r *AuthRepository) Login(username, password string) (*models.User, error) 
 
 	return &user, nil
 }
+
+*/

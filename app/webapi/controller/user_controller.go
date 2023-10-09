@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"district/models"
 	"district/service"
 
 	"github.com/labstack/echo/v4"
@@ -20,42 +19,18 @@ func NewUserController(userService *service.UserService) *UserController {
 	}
 }
 
-func (uc *UserController) Read(c echo.Context) error {
-	username := c.Param("username")
+// Endpoint: /api/user/:id
+// - Retrieves information about the specified user (email, username, address, etc).
+func (uc *UserController) UserInformation(c echo.Context) error {
+	identification, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
+	}
 
-	user, err := uc.userService.GetUserByUsername(username)
+	user, err := uc.userService.GetUserByIdentification(identification)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, user)
-}
-
-func (uc *UserController) Update(c echo.Context) error {
-	var user models.User
-	err := c.Bind(&user)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	err = uc.userService.UpdateUser(&user)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, user)
-}
-
-func (uc *UserController) Delete(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	err = uc.userService.DeleteUser(id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.NoContent(http.StatusNoContent)
 }

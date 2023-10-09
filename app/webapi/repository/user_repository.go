@@ -15,10 +15,25 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) GetUserByUsername(username string) (*models.User, error) {
-	query := "SELECT username, password FROM users WHERE username = $1"
+func (r *UserRepository) CreateUser(user *models.User) error {
+	query := "INSERT INTO users (identification, email, username, password, address, balance) VALUES ($1, $2, $3, $4, $5, $6)"
+	err := r.db.QueryRow(query, user.Email, user.Username, user.Password, user.Address, user.Balance)
+	if err != nil {
+		return fmt.Errorf("failed to create user: %w", err)
+	}
+	return nil
+}
+
+func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+	query := "SELECT identification, email, username, password, address, balance FROM users WHERE email = $1"
 	user := &models.User{}
-	err := r.db.QueryRow(query, username).Scan(&user.Username, &user.Password)
+	err := r.db.QueryRow(query, email).Scan(
+		&user.Identification,
+		&user.Email,
+		&user.Password,
+		&user.Address,
+		&user.Balance,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("user not found: %w", err)
@@ -28,21 +43,22 @@ func (r *UserRepository) GetUserByUsername(username string) (*models.User, error
 	return user, nil
 }
 
-// TO-DO: Fix logic on username handling
-func (r *UserRepository) UpdateUser(user *models.User) error {
-	query := "UPDATE users SET username = $1, password = $2 WHERE username = $3"
-	_, err := r.db.Exec(query, user.Username, user.Password, user.Username)
+func (r *UserRepository) GetUserByIdentification(identification int) (*models.User, error) {
+	query := "SELECT identification, email, username, password, address, balance FROM users WHERE identification = $1"
+	user := &models.User{}
+	err := r.db.QueryRow(query, identification).Scan(
+		&user.Identification,
+		&user.Email,
+		&user.Username,
+		&user.Password,
+		&user.Address,
+		&user.Balance,
+	)
 	if err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("user not found: %w", err)
+		}
+		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	return nil
-}
-
-func (r *UserRepository) DeleteUser(username string) error {
-	query := "DELETE FROM users WHERE username = $1"
-	_, err := r.db.Exec(query, username)
-	if err != nil {
-		return fmt.Errorf("failed to delete user: %w", err)
-	}
-	return nil
+	return user, nil
 }

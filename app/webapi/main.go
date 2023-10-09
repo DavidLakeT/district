@@ -23,7 +23,7 @@ func main() {
 		log.Fatal(dbError)
 	}
 
-	database.SetupDatabase(db)
+	dbError = database.SetupDatabase(db)
 	if dbError != nil {
 		log.Fatal(dbError)
 	}
@@ -33,6 +33,6 @@ func main() {
 	userController := controller.NewUserController(userService)
 
 	app := echo.New()
-	app.GET("api/user/:id", userController.Read)
+	app.GET("api/user/:id", userController.UserInformation)
 	app.Logger.Fatal(app.Start(":5000"))
 }
