@@ -33,7 +33,7 @@ func main() {
 	userController := controller.NewUserController(userService)
 
 	app := echo.New()
-	app.GET("api/user/:id", userController.UserInformation)
+	app.GET("api/user/:id", userController.GetUserInformation)
 	app.POST("api/user", userController.CreateUser)
 	app.Logger.Fatal(app.Start(":5000"))
 }

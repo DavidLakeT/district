@@ -62,3 +62,12 @@ func (r *UserRepository) GetUserByIdentification(identification int) (*model.Use
 	}
 	return user, nil
 }
+
+func (r *UserRepository) UpdateUser(user *model.User) error {
+	query := "UPDATE users SET email = $1, username = $2, address = $3 WHERE identification = $4"
+	_, err := r.db.Exec(query, user.Email, user.Username, user.Address, user.Identification)
+	if err != nil {
+		return fmt.Errorf("failed to update user: %w", err)
+	}
+	return nil
+}

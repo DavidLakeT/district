@@ -8,11 +8,11 @@ type UserDTO struct {
 	Username       string  `json:"username"`
 	Address        string  `json:"address"`
 	Balance        float64 `json:"balance"`
-	IsAdmin        bool    `json:"isAdmin"`
+	IsAdmin        *bool   `json:"isAdmin"`
 }
 
-func (u *UserDTO) fromUser(user model.User) *UserDTO {
-	return &UserDTO{
+func ConvertToUserDTO(user *model.User) UserDTO {
+	return UserDTO{
 		Identification: user.Identification,
 		Email:          user.Email,
 		Username:       user.Username,
