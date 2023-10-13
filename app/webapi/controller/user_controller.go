@@ -48,6 +48,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, user)
 }
 
+// Endpoint: GET /api/user/:id
 // - Retrieves information about the specified user (email, username, address, etc).
 func (uc *UserController) GetUserInformation(c echo.Context) error {
 	identification, err := strconv.Atoi(c.Param("id"))
@@ -102,4 +103,20 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, user)
+}
+
+// Endpoint: DELETE /api/user/:id
+// - Deletes the user with given identification.
+func (uc *UserController) DeleteUser(c echo.Context) error {
+	identification, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Invalid user ID")
+	}
+
+	err = uc.userService.DeleteUserByIdentification(identification)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "User deleted successfully")
 }

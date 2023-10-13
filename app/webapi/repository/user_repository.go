@@ -71,3 +71,12 @@ func (r *UserRepository) UpdateUser(user *model.User) error {
 	}
 	return nil
 }
+
+func (r *UserRepository) DeleteUserByIdentification(identification int) error {
+	query := "DELETE FROM users WHERE identification = $1"
+	_, err := r.db.Exec(query, identification)
+	if err != nil {
+		return fmt.Errorf("failed to delete user: %w", err)
+	}
+	return nil
+}
