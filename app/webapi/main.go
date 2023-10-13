@@ -1,15 +1,39 @@
 package main
 
 import (
-	"net/http"
+	"log"
 
+	"district/controller"
+	"district/database"
+	"district/repository"
+	"district/service"
+
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
-	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
-	e.Logger.Fatal(e.Start(":1323"))
+	envError := godotenv.Load("config.env")
+	if envError != nil {
+		log.Fatal(envError)
+	}
+
+	db, dbError := database.ConnectDatabase()
+	if dbError != nil {
+		log.Fatal(dbError)
+	}
+
+	dbError = database.SetupDatabase(db)
+	if dbError != nil {
+		log.Fatal(dbError)
+	}
+
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(*userRepository)
+	userController := controller.NewUserController(userService)
+
+	app := echo.New()
+	app.GET("api/user/:id", userController.GetUserInformation)
+	app.POST("api/user", userController.CreateUser)
+	app.Logger.Fatal(app.Start(":5000"))
 }
