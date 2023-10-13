@@ -18,6 +18,12 @@
           <li class="nav-item">
             <router-link to="/login" class="nav-link">Sign in</router-link>
           </li>
+          <li class="nav-item">
+            <router-link v-if="user && user.id" :to="'/profile/' + user.id">
+              My Profile
+            </router-link>
+          </li>
+          
           <!-- Add more links as needed -->
         </ul>
       </div>
@@ -33,5 +39,12 @@
   <style scoped>
   /* Add component-specific styles here */
   /* If needed */
+  .navbar-brand{
+    margin-left: 2%;
+  }
+
+  .navbar-nav{
+    margin-right: 2%;
+  }
   </style>
   

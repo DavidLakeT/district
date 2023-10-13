@@ -5,6 +5,8 @@ import ProductPage from '@/components/ProductPage.vue';
 import MyCart from '@/components/MyCart.vue'; 
 import Register from '@/components/Register.vue';
 import Login from '@/components/Login.vue';
+import UserProfile from '@/components/UserProfile.vue';
+
 
 
 const routes = [
@@ -32,6 +34,10 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/profile/:id',
+    component: UserProfile
   }
 ];
 

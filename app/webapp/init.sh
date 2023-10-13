@@ -6,3 +6,4 @@ vue create your-project-name
 cd your-project-name
 vue add router
 npm install bootstrap
+npm install axios

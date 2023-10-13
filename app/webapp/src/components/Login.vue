@@ -10,7 +10,7 @@
           <label for="password">Password:</label>
           <input type="password" v-model="password" class="form-control" id="password" placeholder="Enter your password" required>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <button  @click="loginUser" type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
       <div class="mt-3 text-center">
         Don't have an account? <router-link to="/register">Create one</router-link>
@@ -19,28 +19,35 @@
   </template>
   
   <script>
+  import axios from 'axios';
+  
   export default {
-    name: "Login",
+
     data() {
       return {
-        email: "",
-        password: ""
+        email: '',
+        password: ''
       };
     },
+  
     methods: {
-      login() {
-        // Implement login functionality here
-        console.log("Logged in with email:", this.email);
+      async loginUser() {
+        try {
+          const response = await axios.post('/api/auth/login', {
+            email: this.email,
+            password: this.password
+          });
+          console.log('User logged in:', response.data);
+        } catch (error) {
+          console.error('Error logging in:', error);
+        }
       }
     }
   };
   </script>
   
-  <style scoped>
-  /* Add component-specific styles here */
   
-  /* Optional: Add custom styles */
-  /* Adjust margins and padding as needed */
+  <style scoped>
   .container {
     margin-bottom: 17%;
   }
