@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+)
 
 type User struct {
 	Identification int     `json:"identification"`
@@ -10,7 +12,7 @@ type User struct {
 	Address        string  `json:"address"`
 	Balance        float64 `json:"balance"`
 	IsAdmin        *bool   `json:"isAdmin"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeleteAt       time.Time
+	CreatedAt      sql.NullTime
+	UpdatedAt      sql.NullTime
+	DeletedAt      sql.NullTime
 }
