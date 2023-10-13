@@ -12,6 +12,9 @@
           <li class="nav-item">
             <router-link to="/products" class="nav-link">Products</router-link>
           </li>
+          <li class="nav-item">
+            <router-link to="/mycart" class="nav-link">Cart</router-link>
+          </li>
           <!-- Add more links as needed -->
         </ul>
       </div>
