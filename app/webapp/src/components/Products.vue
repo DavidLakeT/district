@@ -4,14 +4,16 @@
         <div class="col-md-10 offset-md-1">
           <div class="row">
             <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
-              <div class="card">
-                <img :src="product.image" class="card-img-top" :alt="product.name">
-                <div class="card-body">
-                  <h5 class="card-title">{{ product.name }}</h5>
-                  <p class="card-text">$ {{ product.price.toFixed(2) }}</p>
-                  <a href="#" class="btn btn-primary">Add to Cart</a>
+              <router-link :to="'/products/' + product.id" class="card-link">
+                <div class="card">
+                  <img :src="imageUrl(product.id)" class="card-img-top" :alt="product.name">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">$ {{ product.price.toFixed(2) }}</p>
+                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                  </div>
                 </div>
-              </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -25,16 +27,20 @@
     data() {
       return {
         products: [
-          { id: 1, name: "Product 1", price: 10.99, image: "images/product1.jpg" },
-          { id: 2, name: "Product 2", price: 15.99, image: "images/product2.jpg" }
+          { id: 1, name: "Product 1", price: 10.99 },
+          { id: 2, name: "Product 2", price: 15.99}
         ]
       };
+    },
+    computed: {
+        imageUrl() {
+            return (productId) => `/images/product${productId}.jpg`;
+        }
     }
-  }
+  };
   </script>
   
   <style scoped>
-  /* Add component-specific styles here */
   .card {
     border: 1px solid #eee;
     border-radius: 10px;
@@ -66,6 +72,11 @@
     background-color: #0056b3;
   }
   
-  /* Additional styles as needed */
+  /* Style for the router-link to remove the outline */
+  .card-link {
+    text-decoration: none;
+    outline: none;
+  }
   </style>
+  
   
