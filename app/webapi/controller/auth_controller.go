@@ -32,5 +32,13 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusCreated, token)
+	c.SetCookie(&http.Cookie{
+		Name:     "auth_token",
+		Value:    token,
+		HttpOnly: true,
+	})
+
+	return c.JSON(http.StatusFound, map[string]string{
+		"auth_token": token,
+	})
 }
