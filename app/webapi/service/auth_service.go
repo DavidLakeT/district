@@ -2,91 +2,45 @@ package service
 
 import (
 	"district/repository"
+	"encoding/base64"
+	"errors"
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
-	authRepository repository.AuthRepository
 	userRepository repository.UserRepository
 }
 
-func NewAuthService(authRepository repository.AuthRepository) *AuthService {
-	return &AuthService{authRepository: authRepository}
-}
-
-/*
-
-func (s *AuthService) Signup(user *models.User) (*models.User, error) {
-	existingUser, err := s.userRepository.GetUserByIdentification(user.Identification)
-	if err != nil {
-		return nil, err
+func NewAuthService(userRepository repository.UserRepository) *AuthService {
+	return &AuthService{
+		userRepository: userRepository,
 	}
-	if existingUser != nil {
-		return nil, errors.New("user already exists")
-	}
-
-	// Hash password
-	hashedPassword := sha256.Sum256([]byte(user.Password))
-	user.Password = string(hashedPassword[:])
-
-	// Set created and updated timestamps
-	now := time.Now()
-	user.CreatedAt = now
-	user.UpdatedAt = now
-
-	// Save user to database
-	err = s.userRepository.CreateUser(user)
-	if err != nil {
-		return nil, err
-	}
-
-	return existingUser, nil
 }
 
 func (s *AuthService) Login(email, password string) (string, error) {
-	// Get user by email
-	user, err := s.userRepository.GetUserByIdentification(email)
-	if err != nil {
-		return "", err
-	}
-	if user == nil {
-		return "", errors.New("user not found")
-	}
-
-	// Check password
-	err = util.CheckPassword(user.Password, password)
+	user, err := s.userRepository.GetUserByEmail(email)
 	if err != nil {
 		return "", err
 	}
 
-	// Generate JWT token
-	token, err := s.generateToken(user)
-	if err != nil {
-		return "", err
+	if !CheckPasswordHash(password, user.Password) {
+		return "", errors.New("wrong credentials")
 	}
 
-	return token, nil
+	token := fmt.Sprintf("%s:%s", user.Username, user.Email)
+	encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
+
+	return encodedToken, nil
 }
 
-func (s *AuthService) generateToken(user *models.User) (string, error) {
-	// Set expiration time
-	expirationTime := time.Now().Add(24 * time.Hour)
-
-	// Create JWT claims
-	claims := &util.Claims{
-		Email: user.Email,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-
-	// Generate JWT token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("secret"))
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	return string(bytes), err
 }
 
-*/
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}

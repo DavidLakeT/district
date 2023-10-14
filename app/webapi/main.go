@@ -30,10 +30,13 @@ func main() {
 
 	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(*userRepository)
+	authService := service.NewAuthService(*userRepository)
 	userController := controller.NewUserController(userService)
+	authController := controller.NewAuthController(authService)
 
 	app := echo.New()
 	app.GET("api/user/:id", userController.GetUserInformation)
 	app.POST("api/user", userController.CreateUser)
+	app.POST("api/auth/login", authController.LoginUser)
 	app.Logger.Fatal(app.Start(":5000"))
 }
