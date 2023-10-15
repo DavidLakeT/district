@@ -5,7 +5,6 @@ import (
 	"district/model"
 	"errors"
 	"fmt"
-	"time"
 )
 
 type UserRepository struct {
@@ -95,11 +94,11 @@ func (r *UserRepository) UpdateUser(user *model.User) error {
 	return nil
 }
 
-func (r *UserRepository) DeleteUserByIdentification(identification int) error {
-	query := "UPDATE users SET deleted_at = $1 WHERE identification = $2"
-	_, err := r.db.Exec(query, time.Now().Format("2006-01-02 15:04:05"), identification)
+func (r *UserRepository) DeleteUser(identification int) error {
+	_, err := r.db.Exec("UPDATE users SET deleted_at = NOW() WHERE identification = $1", identification)
 	if err != nil {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
+
 	return nil
 }

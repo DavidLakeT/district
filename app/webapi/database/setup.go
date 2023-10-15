@@ -33,7 +33,10 @@ func SetupDatabase(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS products (
 			id INTEGER PRIMARY KEY,
 			name VARCHAR(60) NOT NULL,
-			price FLOAT(8) NOT NULL
+			price FLOAT(8) NOT NULL,
+			created_at TIMESTAMP DEFAULT NOW(),
+			updated_at TIMESTAMP DEFAULT NOW(),
+			deleted_at TIMESTAMP
 		);
 	`)
 	if err != nil {
