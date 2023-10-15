@@ -5,12 +5,14 @@ import (
 )
 
 func SetupDatabase(db *sql.DB) error {
-	_, err := db.Exec(`DROP TABLE IF EXISTS users;`)
-	if err != nil {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS users;`); err != nil {
+		return err
+	}
+	if _, err := db.Exec(`DROP TABLE IF EXISTS products;`); err != nil {
 		return err
 	}
 
-	_, err = db.Exec(`
+	_, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
 			identification INTEGER PRIMARY KEY,
 			email VARCHAR(60) NOT NULL UNIQUE,
@@ -21,6 +23,17 @@ func SetupDatabase(db *sql.DB) error {
 			created_at TIMESTAMP DEFAULT NOW(),
 			updated_at TIMESTAMP DEFAULT NOW(),
 			deleted_at TIMESTAMP
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS products (
+			id INTEGER PRIMARY KEY,
+			name VARCHAR(60) NOT NULL,
+			price FLOAT(8) NOT NULL
 		);
 	`)
 	if err != nil {
