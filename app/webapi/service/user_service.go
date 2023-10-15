@@ -26,5 +26,5 @@ func (s *UserService) UpdateUser(user *model.User) error {
 }
 
 func (s *UserService) DeleteUserByIdentification(identification int) error {
-	return s.userRepository.DeleteUserByIdentification(identification)
+	return s.userRepository.DeleteUser(identification)
 }
