@@ -10,6 +10,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
@@ -35,6 +36,15 @@ func main() {
 	authController := controller.NewAuthController(authService)
 
 	app := echo.New()
+
+	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:8080"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
+
 	app.GET("api/user/:id", userController.GetUserInformation)
 	app.POST("api/user", userController.CreateUser)
 	app.POST("api/auth/login", authController.LoginUser)
