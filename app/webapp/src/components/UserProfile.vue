@@ -31,7 +31,7 @@ export default {
   methods: {
     async fetchUserProfile(userId) {
       try {
-        const response = await axios.get(`/api/user/${userId}`);
+        const response = await axios.get(`localhost:5000/api/user/${userId}`);
         this.user = response.data;
       } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -40,7 +40,7 @@ export default {
 
     async updateUserProfile(userId) {
       try {
-        const response = await axios.put(`/api/user/${userId}`, this.updatedUserInfo);
+        const response = await axios.put(`localhost:5000/api/user/${userId}`, this.updatedUserInfo);
         console.log('User profile updated:', response.data);
       } catch (error) {
         console.error('Error updating user profile:', error);
