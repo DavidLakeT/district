@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/components/Home.vue';
-import Products from '@/components/Products.vue';
-import ProductPage from '@/components/ProductPage.vue';
-import MyCart from '@/components/MyCart.vue'; 
-import Register from '@/components/Register.vue';
-import Login from '@/components/Login.vue';
-import UserProfile from '@/components/UserProfile.vue';
+import Home from '@/views/HomeView.vue';
+import Products from '@/views/ProductsView.vue';
+import ProductPage from '@/views/ProductPageView.vue';
+import MyCart from '@/views/CartView.vue'; 
+import Register from '@/views/Auth/RegisterView.vue';
+import Login from  '@/views/Auth/LoginView.vue';
+import UserProfile from '@/views/UserProfileView.vue';
 
 
 
@@ -36,7 +36,7 @@ const routes = [
     component: Login
   },
   {
-    path: '/profile/:id',
+    path: '/profile/:userId',
     component: UserProfile
   }
 ];

@@ -1,0 +1,16 @@
+.container {
+    padding: 20px;
+}
+  
+  .form-group {
+    margin-bottom: 1rem;
+}
+  
+.btn-primary {
+    background-color: #007BFF;
+    border: none;
+}
+  
+.btn-primary:hover {
+    background-color: #0056b3;
+}
