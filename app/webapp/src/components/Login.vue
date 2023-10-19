@@ -15,8 +15,12 @@
     <div class="mt-3 text-center">
       Don't have an account? <router-link to="/register">Create one</router-link>
     </div>
+    <div v-if="loginError" class="alert alert-danger mt-3 text-center">
+      {{ loginError }}
+    </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -25,11 +29,14 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      loginError: null,
     };
   },
   methods: {
     async loginUser() {
+      this.loginError = null;
+
       try {
         const response = await axios.post('http://localhost:5000/api/auth/login', {
           email: this.email,
@@ -42,31 +49,25 @@ export default {
         });
 
         if (response.status === 302 || response.data.auth_token) {
-          console.log('User logged in successfully');
-
-          const token = response.data.auth_token;
-
-          console.log('Token:', token);
-
-          localStorage.setItem('auth_token', token);
-
+          document.cookie = `auth_token=${response.data.auth_token}; path=/`;
           this.$router.push('/products');
         } else {
-          console.error('Error logging in dggdgdg:', response.data);
+          this.loginError = 'Incorrect credentials. Please try again.';
         }
       } catch (error) {
         if (error.response) {
-          console.error('Error logging in dddd:', error.response.data);
+          this.loginError = 'Incorrect credentials. Please try again.';
         } else if (error.request) {
-          console.error('Error logging in xxxx:', 'No response received');
+          this.loginError = 'Network error. Please try again.';
         } else {
-          console.error('Error :', error.message);
+          this.loginError = 'An error occurred. Please try again.';
         }
       }
     }
   }
 };
 </script>
+
 
 <style scoped>
 .container {
