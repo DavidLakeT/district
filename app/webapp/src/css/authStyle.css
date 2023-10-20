@@ -1,0 +1,44 @@
+.container {
+    margin-bottom: 17%;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2%;
+    align-items: center;
+  }
+  
+  .info-label {
+    font-weight: bold;
+    flex-basis: 8%; /* Adjust the width of the labels as needed */
+    text-align: right;
+  }
+  
+  .info-value {
+    flex-grow: 1;
+    margin-left: 10px;
+    font-size: 1.2rem; 
+    color: #333; 
+  }
