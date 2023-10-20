@@ -5,10 +5,13 @@ import (
 )
 
 func SetupDatabase(db *sql.DB) error {
-	if _, err := db.Exec(`DROP TABLE IF EXISTS users;`); err != nil {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS products CASCADE;`); err != nil {
 		return err
 	}
-	if _, err := db.Exec(`DROP TABLE IF EXISTS products;`); err != nil {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS reviews;`); err != nil {
+		return err
+	}
+	if _, err := db.Exec(`DROP TABLE IF EXISTS users;`); err != nil {
 		return err
 	}
 
@@ -31,14 +34,32 @@ func SetupDatabase(db *sql.DB) error {
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS products (
-			id INTEGER PRIMARY KEY,
+			id SERIAL PRIMARY KEY,
 			name VARCHAR(60) NOT NULL,
+			description TEXT NOT NULL,
 			price FLOAT(8) NOT NULL,
 			created_at TIMESTAMP DEFAULT NOW(),
 			updated_at TIMESTAMP DEFAULT NOW(),
 			deleted_at TIMESTAMP
 		);
 	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS reviews (
+		id SERIAL PRIMARY KEY,
+		user_id INTEGER NOT NULL,
+		product_id INTEGER NOT NULL,
+		content TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT NOW(),
+		updated_at TIMESTAMP DEFAULT NOW(),
+		deleted_at TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users (identification),
+		FOREIGN KEY (product_id) REFERENCES products (id)
+	);
+`)
 	if err != nil {
 		return err
 	}
