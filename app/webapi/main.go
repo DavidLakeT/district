@@ -30,10 +30,13 @@ func main() {
 	}
 
 	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(*userRepository)
-	authService := service.NewAuthService(*userRepository)
+	productRepository := repository.NewProductRepository(db)
+	userService := service.NewUserService(userRepository)
+	authService := service.NewAuthService(userRepository)
+	productService := service.NewProductService(productRepository)
 	userController := controller.NewUserController(userService)
 	authController := controller.NewAuthController(authService)
+	productController := controller.NewProductController(productService)
 
 	app := echo.New()
 
@@ -48,5 +51,10 @@ func main() {
 	app.GET("api/user/:id", userController.GetUserInformation)
 	app.POST("api/user", userController.CreateUser)
 	app.POST("api/auth/login", authController.LoginUser)
+
+	app.GET("api/product/:name", productController.SearchProducts)
+	app.GET("api/product", productController.GetAllProducts)
+	app.POST("api/product", productController.CreateProduct)
+
 	app.Logger.Fatal(app.Start(":5000"))
 }

@@ -11,8 +11,8 @@ type UserDTO struct {
 	IsAdmin        *bool   `json:"isAdmin,omitempty"`
 }
 
-func ConvertToUserDTO(user *model.User) UserDTO {
-	return UserDTO{
+func ConvertToUserDTO(user *model.User) *UserDTO {
+	return &UserDTO{
 		Identification: user.Identification,
 		Email:          user.Email,
 		Username:       user.Username,
