@@ -37,7 +37,7 @@
 
 <script>
 import loginFetcher from '@/js/login.js';
-import FormField from './FormField.vue';
+import FormField from '../common/FormField.vue';
 
 export default {
   name: "LoginBox",

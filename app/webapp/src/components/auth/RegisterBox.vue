@@ -62,7 +62,7 @@
 
 <script>
 import registerFetcher from '@/js/register.js';
-import FormField from './FormField.vue';
+import FormField from '../common/FormField.vue';
 
 export default {
   name: "RegisterBox",

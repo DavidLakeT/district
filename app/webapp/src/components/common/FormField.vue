@@ -1,7 +1,7 @@
 <template>
-    <div class="form-group">
-      <label :for="fieldId">{{ label }}</label>
-      <input :type="fieldType" :class="inputClass" :id="fieldId" :placeholder="placeholder" :value="fieldValue" @input="updateValue" required />
+    <div class="form-group user-info">
+      <label :for="fieldId" class="info-label">{{ label }}</label>
+      <input class="info-value" :type="fieldType" :class="inputClass" :id="fieldId" :placeholder="placeholder" :value="fieldValue" @input="updateValue" required />
     </div>
   </template>
   
