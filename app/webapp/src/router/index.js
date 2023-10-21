@@ -6,6 +6,7 @@ import MyCart from '@/views/CartView.vue';
 import Register from '@/views/Auth/RegisterView.vue';
 import Login from  '@/views/Auth/LoginView.vue';
 import UserProfile from '@/views/UserProfileView.vue';
+import ProductCreateForm from  '@/views/Admin/ProductCreateView.vue'
 
 
 
@@ -38,6 +39,10 @@ const routes = [
   {
     path: '/profile/:userId',
     component: UserProfile
+  },
+  {
+    path: '/admin/product/create',
+    component: ProductCreateForm
   }
 ];
 

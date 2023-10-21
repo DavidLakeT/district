@@ -10,6 +10,7 @@
   
   <script>
   import ProductList from '@/components/product/ProductList.vue';
+  import { fetchProducts } from '@/js/products.js'; 
   
   export default {
     name: "Products",
@@ -17,13 +18,13 @@
       ProductList,
     },
     data() {
-        return {
-            products: [
-            { id: 1, name: "Product 1", price: 10.99 },
-            { id: 2, name: "Product 2", price: 15.99 },
-            ]
-        };
-    }
+      return {
+        products: [],
+      };
+    },
+    async created() {
+      this.products = await fetchProducts();
+    },
   };
   </script>
   
