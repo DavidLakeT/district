@@ -37,6 +37,7 @@ func SetupDatabase(db *sql.DB) error {
 			id SERIAL PRIMARY KEY,
 			name VARCHAR(60) NOT NULL,
 			description TEXT NOT NULL,
+			stock INTEGER NOT NULL,
 			price FLOAT(8) NOT NULL,
 			created_at TIMESTAMP DEFAULT NOW(),
 			updated_at TIMESTAMP DEFAULT NOW(),

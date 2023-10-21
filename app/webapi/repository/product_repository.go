@@ -16,8 +16,8 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 }
 
 func (r *ProductRepository) CreateProduct(product *model.Product) error {
-	query := "INSERT INTO products (name, description, price) VALUES ($1, $2, $3)"
-	_, err := r.db.Exec(query, product.Name, product.Description, product.Price)
+	query := "INSERT INTO products (name, description, stock, price) VALUES ($1, $2, $3, $4)"
+	_, err := r.db.Exec(query, product.Name, product.Description, product.Stock, product.Price)
 	if err != nil {
 		return fmt.Errorf("failed to create product: %w", err)
 	}
@@ -39,6 +39,7 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 			&product.ID,
 			&product.Name,
 			&product.Description,
+			&product.Stock,
 			&product.Price,
 			&product.CreatedAt,
 			&product.UpdatedAt,
@@ -63,7 +64,7 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 }
 
 func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
-	rows, err := r.db.Query("SELECT id, name, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
+	rows, err := r.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get products: %w", err)
 	}
@@ -72,7 +73,7 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 	products := make([]*model.Product, 0)
 	for rows.Next() {
 		product := &model.Product{}
-		err := rows.Scan(&product.ID, &product.Name, &product.Price)
+		err := rows.Scan(&product.ID, &product.Name, &product.Description, &product.Stock, &product.Price)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get products: %w", err)
 		}
