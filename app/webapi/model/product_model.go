@@ -8,6 +8,7 @@ type Product struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
+	Stock       int       `json:"stock"`
 	Price       float64   `json:"price"`
 	Reviews     []*Review `json:"reviews"`
 	CreatedAt   sql.NullTime
