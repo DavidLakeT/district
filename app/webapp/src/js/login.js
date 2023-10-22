@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '@/store';
 
 export default {
   name: "LoginFetcher",
@@ -25,7 +26,10 @@ export default {
         });
 
         if (response.status === 302 || response.data.auth_token) {
-          document.cookie = `auth_token=${response.data.auth_token}; path=/`;
+          this.$root.authToken = response.data.auth_token;
+          //document.cookie = `auth_token=${response.data.auth_token}; path=/`;
+          store.commit('auth/setAuthToken', response.data.auth_token);
+          //store.commit('auth/setUser', response.data.user);
           this.$router.push('/products');
         } else {
           this.loginError = 'Incorrect credentials. Please try again.';
