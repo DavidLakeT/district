@@ -121,7 +121,7 @@ func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, e
 	reviews := make([]*model.Review, 0)
 	for rows.Next() {
 		review := &model.Review{}
-		err := rows.Scan(&review.ID, &review.ProductID, &review.AuthorID, &review.Content)
+		err := rows.Scan(&review.ID, &review.ProductID, &review.UserID, &review.Content)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get reviews: %w", err)
 		}

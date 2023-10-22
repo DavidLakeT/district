@@ -7,7 +7,7 @@ import (
 type Review struct {
 	ID        int    `json:"id"`
 	ProductID int    `json:"product_id"`
-	AuthorID  string `json:"author"`
+	UserID    string `json:"author"`
 	Content   string `json:"content"`
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
