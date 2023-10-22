@@ -37,3 +37,19 @@ func (r *ReviewRepository) GetReviewById(id int) (*model.Review, error) {
 	}
 	return review, nil
 }
+
+func (r *ReviewRepository) UpdateReview(review *model.Review) error {
+	query := `UPDATE reviews SET content = $1 WHERE id = $2 AND deleted_at IS NULL`
+	result, err := r.db.Exec(query, review.Content, review.ID)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to update review: %v", err))
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to get rows affected: %v", err))
+	}
+	if rowsAffected == 0 {
+		return errors.New(fmt.Sprintf("review with id %d not found", review.ID))
+	}
+	return nil
+}

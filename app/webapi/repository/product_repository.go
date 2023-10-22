@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"district/model"
-	"errors"
 	"fmt"
 )
 
@@ -136,23 +135,19 @@ func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, e
 }
 
 func (r *ProductRepository) UpdateProduct(product *model.Product) error {
-	query := "SELECT deleted_at FROM users WHERE identification = $1"
-	var deletedAt sql.NullTime
-	err := r.db.QueryRow(query, product.ID).Scan(&deletedAt)
+	query := "UPDATE products SET name = $1, price = $2 WHERE id = $3 AND deleted_at IS NULL"
+	result, err := r.db.Exec(query, product.Name, product.Price, product.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("product not found: %w", err)
-		}
-		return fmt.Errorf("failed to get user: %w", err)
-	}
-	if deletedAt.Valid {
-		return fmt.Errorf("product has been deleted")
+		return fmt.Errorf("failed to update product: %w", err)
 	}
 
-	query = "UPDATE products SET name = $1, price = $2 WHERE identification = $3"
-	_, err = r.db.Exec(query, product.Name, product.Price, product.ID)
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("product not found or has been deleted")
 	}
 
 	return nil
