@@ -1,7 +1,7 @@
 package controller
 
 import (
-	controller "district/controller/request"
+	request "district/controller/request"
 	"district/service"
 	"net/http"
 
@@ -23,7 +23,7 @@ func NewAuthController(authService *service.AuthService) *AuthController {
 // Logs in the user into the application. Retrieves token.
 
 func (ac *AuthController) LoginUser(c echo.Context) error {
-	var request controller.LoginRequest
+	var request request.LoginRequest
 
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{

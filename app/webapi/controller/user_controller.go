@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	controller "district/controller/request"
-	models "district/model"
-	model "district/model/dto"
+	request "district/controller/request"
+	"district/model"
+	dto "district/model/dto"
 	service "district/service"
 
 	"github.com/labstack/echo/v4"
@@ -26,10 +26,9 @@ func NewUserController(userService *service.UserService) *UserController {
 // Endpoint: POST /api/user
 // - Creates a new user with the specified information.
 func (uc *UserController) CreateUser(c echo.Context) error {
-	var request controller.CreateUserRequest
+	var request request.CreateUserRequest
 
 	if err := c.Bind(&request); err != nil {
-		fmt.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}
 
@@ -38,7 +37,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
-	user := models.User{
+	user := model.User{
 		Identification: request.Identification,
 		Email:          request.Email,
 		Username:       request.Username,
@@ -53,7 +52,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusCreated, map[string]interface{}{"user": model.ConvertToUserDTO(&user)})
+	return c.JSON(http.StatusCreated, map[string]interface{}{"user": dto.ConvertToUserDTO(&user)})
 }
 
 // Endpoint: GET /api/user/:id
@@ -80,7 +79,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	var request controller.UpdateUserRequest
+	var request request.UpdateUserRequest
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}

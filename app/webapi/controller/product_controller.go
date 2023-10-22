@@ -1,7 +1,7 @@
 package controller
 
 import (
-	controller "district/controller/request"
+	request "district/controller/request"
 	models "district/model"
 	"district/service"
 	"fmt"
@@ -37,7 +37,7 @@ func (pc *ProductController) GetAllProducts(c echo.Context) error {
 // Endpoint: POST /api/product
 // - Creates a new product with the specified information.
 func (pc *ProductController) CreateProduct(c echo.Context) error {
-	var request controller.CreateProductRequest
+	var request request.CreateProductRequest
 
 	if err := c.Bind(&request); err != nil {
 		fmt.Println(err)
@@ -53,7 +53,6 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	}
 
 	if err := pc.productService.CreateProduct(&product); err != nil {
-		fmt.Println("error:", err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
