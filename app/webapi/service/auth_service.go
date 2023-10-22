@@ -29,7 +29,7 @@ func (s *AuthService) Login(email, password string) (string, error) {
 		return "", errors.New("wrong credentials")
 	}
 
-	token := fmt.Sprintf("%s:%s", user.Username, user.Email)
+	token := fmt.Sprintf("%d:%s:%s:%v", user.Identification, user.Username, user.Email, user.IsAdmin)
 	encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
 
 	return encodedToken, nil
