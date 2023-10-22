@@ -19,17 +19,23 @@ func NewAuthController(authService *service.AuthService) *AuthController {
 }
 
 // Endpoint: POST /api/auth/login
+
 // Logs in the user into the application. Retrieves token.
+
 func (ac *AuthController) LoginUser(c echo.Context) error {
 	var request controller.LoginRequest
 
 	if err := c.Bind(&request); err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid login information")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "Invalid login information",
+		})
 	}
 
 	token, err := ac.authService.Login(request.Email, request.Password)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
 	}
 
 	c.SetCookie(&http.Cookie{
@@ -38,7 +44,7 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 		HttpOnly: true,
 	})
 
-	return c.JSON(http.StatusFound, map[string]string{
+	return c.JSON(http.StatusFound, map[string]interface{}{
 		"auth_token": token,
 	})
 }

@@ -63,6 +63,25 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 	return products, nil
 }
 
+func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
+	product := &model.Product{}
+	err := r.db.QueryRow("SELECT id, name, description, stock, price FROM products WHERE id = $1 AND deleted_at IS NULL", id).Scan(&product.ID, &product.Name, &product.Description, &product.Stock, &product.Price)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("product with ID %d not found", id)
+		}
+		return nil, fmt.Errorf("failed to get product: %w", err)
+	}
+
+	reviews, err := r.getProductReviews(product.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+	}
+	product.Reviews = reviews
+
+	return product, nil
+}
+
 func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
 	rows, err := r.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
 	if err != nil {

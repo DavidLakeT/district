@@ -52,7 +52,8 @@ func main() {
 	app.POST("api/user", userController.CreateUser)
 	app.POST("api/auth/login", authController.LoginUser)
 
-	app.GET("api/product/:name", productController.SearchProducts)
+	app.GET("api/product/name/:name", productController.SearchProductsByName)
+	app.GET("api/product/id/:id", productController.SearchProductsById)
 	app.GET("api/product", productController.GetAllProducts)
 	app.POST("api/product", productController.CreateProduct)
 
