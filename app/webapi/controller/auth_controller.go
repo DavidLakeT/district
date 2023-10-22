@@ -19,9 +19,7 @@ func NewAuthController(authService *service.AuthService) *AuthController {
 }
 
 // Endpoint: POST /api/auth/login
-
 // Logs in the user into the application. Retrieves token.
-
 func (ac *AuthController) LoginUser(c echo.Context) error {
 	var request request.LoginRequest
 

@@ -48,7 +48,7 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 
 // Endpoint: GET /api/review/:id
 // - Retrieves the review with the specified ID.
-func (rc *ReviewController) GetReview(c echo.Context) error {
+func (rc *ReviewController) GetReviewById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{

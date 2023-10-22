@@ -65,7 +65,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	})
 }
 
-// Endpoint: GET /api/product/:id
+// Endpoint: GET /api/product/id/:id
 // - Retrieves information about the specified product (name, description, price, etc).
 func (pc *ProductController) SearchProductsById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -85,7 +85,7 @@ func (pc *ProductController) SearchProductsById(c echo.Context) error {
 	return c.JSON(http.StatusOK, product)
 }
 
-// Endpoint: GET /api/product/:name
+// Endpoint: GET /api/product/name/:name
 // - Retrieves information about the specified product (name, description, price, etc).
 func (pc *ProductController) SearchProductsByName(c echo.Context) error {
 	name := c.Param("name")

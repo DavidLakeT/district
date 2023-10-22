@@ -57,7 +57,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 
 // Endpoint: GET /api/user/:id
 // - Retrieves information about the specified user (email, username, address, etc).
-func (uc *UserController) GetUserInformation(c echo.Context) error {
+func (uc *UserController) GetUserById(c echo.Context) error {
 	identification, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})

@@ -31,12 +31,15 @@ func main() {
 
 	userRepository := repository.NewUserRepository(db)
 	productRepository := repository.NewProductRepository(db)
-	userService := service.NewUserService(userRepository)
+	reviewRepository := repository.NewReviewRepository(db)
 	authService := service.NewAuthService(userRepository)
 	productService := service.NewProductService(productRepository)
-	userController := controller.NewUserController(userService)
+	reviewService := service.NewReviewService(reviewRepository)
+	userService := service.NewUserService(userRepository)
 	authController := controller.NewAuthController(authService)
 	productController := controller.NewProductController(productService)
+	reviewController := controller.NewReviewController(reviewService)
+	userController := controller.NewUserController(userService)
 
 	app := echo.New()
 
@@ -48,14 +51,24 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	app.GET("api/user/:id", userController.GetUserInformation)
-	app.POST("api/user", userController.CreateUser)
+	// Auth-related endpoints.
 	app.POST("api/auth/login", authController.LoginUser)
 
-	app.GET("api/product/name/:name", productController.SearchProductsByName)
-	app.GET("api/product/id/:id", productController.SearchProductsById)
+	// Product-related endpoints
 	app.GET("api/product", productController.GetAllProducts)
+	app.GET("api/product/id/:id", productController.SearchProductsById)
+	app.GET("api/product/name/:name", productController.SearchProductsByName)
 	app.POST("api/product", productController.CreateProduct)
+
+	// Review-related endpoints
+	app.GET("api/review/:id", reviewController.GetReviewById)
+	app.POST("api/review", reviewController.CreateReview)
+
+	// User-related endpoints
+	app.GET("api/user/:id", userController.GetUserById)
+	app.POST("api/user", userController.CreateUser)
+	app.PUT("api/user/:id", userController.UpdateUser)
+	app.DELETE("api/user/:id", userController.DeleteUser)
 
 	app.Logger.Fatal(app.Start(":5000"))
 }
