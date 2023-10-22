@@ -5,6 +5,7 @@ import (
 	"district/model"
 	"district/service"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -43,4 +44,24 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 		"product_id": review.ProductID,
 		"content":    review.Content,
 	})
+}
+
+// Endpoint: GET /api/review/:id
+// - Retrieves the review with the specified ID.
+func (rc *ReviewController) GetReview(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid product ID",
+		})
+	}
+
+	review, err := rc.reviewService.GetReviewById(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, map[string]interface{}{
+			"error": "review not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, review)
 }
