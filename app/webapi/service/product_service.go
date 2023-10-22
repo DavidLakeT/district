@@ -32,6 +32,17 @@ func (p *ProductService) CreateProduct(product *model.Product) error {
 	return p.productRepository.CreateProduct(product)
 }
 
+func (p *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
+	product, err := p.productRepository.GetProductByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	productDTO := dto.ConvertToProductDTO(product)
+
+	return productDTO, nil
+}
+
 func (p *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, error) {
 	products, err := p.productRepository.GetProductsByName(name)
 	if err != nil {
