@@ -76,6 +76,7 @@ func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
 	}
+
 	product.Reviews = reviews
 
 	return product, nil

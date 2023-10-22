@@ -5,7 +5,7 @@ import "district/model"
 type ReviewDTO struct {
 	ID        int    `json:"id"`
 	ProductID int    `json:"product_id"`
-	UserID    string `json:"user_id"`
+	UserID    int    `json:"user_id"`
 	Content   string `json:"content"`
 }
 

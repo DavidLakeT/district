@@ -34,7 +34,15 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 		Content:   request.Content,
 	}
 
-	if err := rc.reviewService.CreateReview(&review); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		print("ERROR: ", err.Error())
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to create a review",
+		})
+	}
+
+	if err := rc.reviewService.CreateReview(token.Value, &review); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})

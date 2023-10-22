@@ -4,17 +4,42 @@ import (
 	"district/model"
 	dto "district/model/dto"
 	"district/repository"
+	"encoding/base64"
+	"strconv"
+	"strings"
 )
 
 type ReviewService struct {
 	reviewRepository *repository.ReviewRepository
+	userRepository   *repository.UserRepository
 }
 
-func NewReviewService(reviewRepository *repository.ReviewRepository) *ReviewService {
-	return &ReviewService{reviewRepository: reviewRepository}
+func NewReviewService(reviewRepository *repository.ReviewRepository, userRepository *repository.UserRepository) *ReviewService {
+	return &ReviewService{
+		reviewRepository: reviewRepository,
+		userRepository:   userRepository,
+	}
 }
 
-func (r *ReviewService) CreateReview(review *model.Review) error {
+func (r *ReviewService) CreateReview(token string, review *model.Review) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	identification, err := strconv.Atoi(tokenValues[0])
+	if err != nil {
+		return err
+	}
+
+	user, err := r.userRepository.GetUserByIdentification(identification)
+	if err != nil {
+		return err
+	}
+
+	review.UserID = user.Identification
+
 	return r.reviewRepository.CreateReview(review)
 }
 

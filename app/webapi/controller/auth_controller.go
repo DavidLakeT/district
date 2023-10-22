@@ -40,6 +40,7 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 		Name:     "auth_token",
 		Value:    token,
 		HttpOnly: true,
+		Path:     "/",
 	})
 
 	return c.JSON(http.StatusFound, map[string]interface{}{

@@ -34,7 +34,7 @@ func main() {
 	reviewRepository := repository.NewReviewRepository(db)
 	authService := service.NewAuthService(userRepository)
 	productService := service.NewProductService(productRepository)
-	reviewService := service.NewReviewService(reviewRepository)
+	reviewService := service.NewReviewService(reviewRepository, userRepository)
 	userService := service.NewUserService(userRepository)
 	authController := controller.NewAuthController(authService)
 	productController := controller.NewProductController(productService)
