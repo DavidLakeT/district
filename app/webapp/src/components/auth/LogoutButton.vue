@@ -6,7 +6,7 @@
   export default {
     methods: {
       logout() {
-        this.$store.commit('auth/logout'); // Commit the 'logout' mutation
+        this.$store.commit('auth/logout');
         document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
         this.$router.push('/login');
       },
