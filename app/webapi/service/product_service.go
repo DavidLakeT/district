@@ -4,6 +4,7 @@ import (
 	"district/model"
 	dto "district/model/dto"
 	repository "district/repository/handler"
+	"fmt"
 )
 
 type ProductService struct {
@@ -22,6 +23,12 @@ func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
 
 	productDTOs := make([]*dto.ProductDTO, len(products))
 	for i, product := range products {
+		reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+		}
+
+		product.Reviews = reviews
 		productDTOs[i] = dto.ConvertToProductDTO(product)
 	}
 
@@ -38,6 +45,12 @@ func (ps *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
 		return nil, err
 	}
 
+	reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+	}
+	product.Reviews = reviews
+
 	productDTO := dto.ConvertToProductDTO(product)
 
 	return productDTO, nil
@@ -51,6 +64,12 @@ func (ps *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, err
 
 	productDTOs := make([]*dto.ProductDTO, len(products))
 	for i, product := range products {
+		reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+		}
+		product.Reviews = reviews
+
 		productDTOs[i] = dto.ConvertToProductDTO(product)
 	}
 
