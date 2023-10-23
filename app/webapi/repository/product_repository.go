@@ -112,7 +112,7 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 }
 
 func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, error) {
-	rows, err := r.db.Query("SELECT id, product_id, user_id, content FROM reviews WHERE product_id = $1", productID)
+	rows, err := r.db.Query("SELECT id, product_id, user_email, content FROM reviews WHERE product_id = $1", productID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get reviews: %w", err)
 	}
@@ -121,7 +121,7 @@ func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, e
 	reviews := make([]*model.Review, 0)
 	for rows.Next() {
 		review := &model.Review{}
-		err := rows.Scan(&review.ID, &review.ProductID, &review.UserID, &review.Content)
+		err := rows.Scan(&review.ID, &review.ProductID, &review.UserEmail, &review.Content)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get reviews: %w", err)
 		}

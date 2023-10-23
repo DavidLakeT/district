@@ -51,13 +51,13 @@ func SetupDatabase(db *sql.DB) error {
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS reviews (
 		id SERIAL PRIMARY KEY,
-		user_id INTEGER NOT NULL,
+		user_email VARCHAR(60) NOT NULL,
 		product_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT NOW(),
 		updated_at TIMESTAMP DEFAULT NOW(),
 		deleted_at TIMESTAMP,
-		FOREIGN KEY (user_id) REFERENCES users (identification),
+		FOREIGN KEY (user_email) REFERENCES users (email),
 		FOREIGN KEY (product_id) REFERENCES products (id)
 	);
 `)

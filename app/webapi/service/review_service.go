@@ -38,7 +38,7 @@ func (r *ReviewService) CreateReview(token string, review *model.Review) error {
 		return err
 	}
 
-	review.UserID = user.Identification
+	review.UserEmail = user.Email
 
 	return r.reviewRepository.CreateReview(review)
 }
