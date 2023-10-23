@@ -16,11 +16,11 @@ func NewUserService(repositoryPool *repository.RepositoryPool) *UserService {
 }
 
 func (s *UserService) CreateUser(user *model.User) error {
-	return s.repositoryPool.GetUserRepository().CreateUser(user)
+	return s.repositoryPool.UserRepository.CreateUser(user)
 }
 
 func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO, error) {
-	user, err := s.repositoryPool.GetUserRepository().GetUserByIdentification(identification)
+	user, err := s.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO,
 }
 
 func (s *UserService) UpdateUser(identification int, request *controller.UpdateUserRequest) error {
-	user, err := s.repositoryPool.GetUserRepository().GetUserByIdentification(identification)
+	user, err := s.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return err
 	}
@@ -47,9 +47,9 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 		user.IsAdmin = request.IsAdmin
 	}
 
-	return s.repositoryPool.GetUserRepository().UpdateUser(user)
+	return s.repositoryPool.UserRepository.UpdateUser(user)
 }
 
 func (s *UserService) DeleteUserByIdentification(identification int) error {
-	return s.repositoryPool.GetUserRepository().DeleteUser(identification)
+	return s.repositoryPool.UserRepository.DeleteUser(identification)
 }

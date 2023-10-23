@@ -18,7 +18,7 @@ func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
 }
 
 func (as *AuthService) Login(email, password string) (string, error) {
-	user, err := as.repositoryPool.GetUserRepository().GetUserByEmail(email)
+	user, err := as.repositoryPool.UserRepository.GetUserByEmail(email)
 	if err != nil {
 		return "", err
 	}

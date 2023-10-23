@@ -29,18 +29,18 @@ func (rs *ReviewService) CreateReview(token string, review *model.Review) error 
 		return err
 	}
 
-	user, err := rs.repositoryPool.GetUserRepository().GetUserByIdentification(identification)
+	user, err := rs.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return err
 	}
 
 	review.UserID = user.Identification
 
-	return rs.repositoryPool.GetReviewRepository().CreateReview(review)
+	return rs.repositoryPool.ReviewRepository.CreateReview(review)
 }
 
 func (rs *ReviewService) GetReviewById(id int) (*dto.ReviewDTO, error) {
-	review, err := rs.repositoryPool.GetReviewRepository().GetReviewById(id)
+	review, err := rs.repositoryPool.ReviewRepository.GetReviewById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -51,10 +51,10 @@ func (rs *ReviewService) GetReviewById(id int) (*dto.ReviewDTO, error) {
 }
 
 func (rs *ReviewService) UpdateReview(review *model.Review) error {
-	_, err := rs.repositoryPool.GetReviewRepository().GetReviewById(review.ID)
+	_, err := rs.repositoryPool.ReviewRepository.GetReviewById(review.ID)
 	if err != nil {
 		return err
 	}
 
-	return rs.repositoryPool.GetReviewRepository().UpdateReview(review)
+	return rs.repositoryPool.ReviewRepository.UpdateReview(review)
 }

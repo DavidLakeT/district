@@ -15,7 +15,7 @@ func NewProductService(repositoryPool *repository.RepositoryPool) *ProductServic
 }
 
 func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
-	products, err := ps.repositoryPool.GetProductRepository().GetAllProducts()
+	products, err := ps.repositoryPool.ProductRepository.GetAllProducts()
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +29,11 @@ func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
 }
 
 func (ps *ProductService) CreateProduct(product *model.Product) error {
-	return ps.repositoryPool.GetProductRepository().CreateProduct(product)
+	return ps.repositoryPool.ProductRepository.CreateProduct(product)
 }
 
 func (ps *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
-	product, err := ps.repositoryPool.GetProductRepository().GetProductByID(id)
+	product, err := ps.repositoryPool.ProductRepository.GetProductByID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (ps *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
 }
 
 func (ps *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, error) {
-	products, err := ps.repositoryPool.GetProductRepository().GetProductsByName(name)
+	products, err := ps.repositoryPool.ProductRepository.GetProductsByName(name)
 	if err != nil {
 		return nil, err
 	}

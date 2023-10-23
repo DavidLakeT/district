@@ -3,9 +3,9 @@ package repository
 import "district/repository"
 
 type RepositoryPool struct {
-	productRepository *repository.ProductRepository
-	reviewRepository  *repository.ReviewRepository
-	userRepository    *repository.UserRepository
+	ProductRepository *repository.ProductRepository
+	ReviewRepository  *repository.ReviewRepository
+	UserRepository    *repository.UserRepository
 }
 
 func NewRepositoryPool(
@@ -14,20 +14,8 @@ func NewRepositoryPool(
 	userRepository *repository.UserRepository,
 ) *RepositoryPool {
 	return &RepositoryPool{
-		productRepository: productRepository,
-		reviewRepository:  reviewRepository,
-		userRepository:    userRepository,
+		ProductRepository: productRepository,
+		ReviewRepository:  reviewRepository,
+		UserRepository:    userRepository,
 	}
-}
-
-func (rp *RepositoryPool) GetProductRepository() *repository.ProductRepository {
-	return rp.productRepository
-}
-
-func (rp *RepositoryPool) GetReviewRepository() *repository.ReviewRepository {
-	return rp.reviewRepository
-}
-
-func (rp *RepositoryPool) GetUserRepository() *repository.UserRepository {
-	return rp.userRepository
 }
