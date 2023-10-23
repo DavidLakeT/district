@@ -53,7 +53,7 @@ export default {
     return {
       showReviewForm: false,
       newReview: {
-        author: "",
+        user_id: "",
         rating: 1,
         content: "",
         product_id: this.product.id,
@@ -66,8 +66,7 @@ export default {
     },
     async submitReview() {
       try {
-        const authToken = this.$store.getters['auth/authToken'];
-        const response = await submitReviewForm(this.newReview, authToken);
+        const response = await submitReviewForm(this.newReview);
         if(response){
           this.toggleReviewForm();
         }

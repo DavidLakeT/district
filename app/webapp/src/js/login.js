@@ -27,7 +27,7 @@ export default {
 
         if (response.status === 302 || response.data.auth_token) {
           this.$root.authToken = response.data.auth_token;
-          document.cookie = `auth_token=${response.data.auth_token}; path=/; SameSite=None;`;
+          document.cookie = `auth_token=${response.data.auth_token}; path=/;`;
           
           const user = decodeAuthToken(response.data.auth_token);
           if (user) {

@@ -39,7 +39,7 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 	c.SetCookie(&http.Cookie{
 		Name:     "auth_token",
 		Value:    token,
-		HttpOnly: true,
+		HttpOnly: false,
 		Path:     "/",
 	})
 
