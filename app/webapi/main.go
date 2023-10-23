@@ -8,6 +8,7 @@ import (
 	"district/repository"
 	repositoryPool "district/repository/handler"
 	"district/service"
+	servicePool "district/service/handler"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -39,10 +40,12 @@ func main() {
 	productService := service.NewProductService(repositoryPool)
 	reviewService := service.NewReviewService(repositoryPool)
 	userService := service.NewUserService(repositoryPool)
-	authController := controller.NewAuthController(authService)
-	productController := controller.NewProductController(productService)
-	reviewController := controller.NewReviewController(reviewService)
-	userController := controller.NewUserController(userService)
+	servicePool := servicePool.NewServicePool(authService, productService, reviewService, userService)
+
+	authController := controller.NewAuthController(servicePool)
+	productController := controller.NewProductController(servicePool)
+	reviewController := controller.NewReviewController(servicePool)
+	userController := controller.NewUserController(servicePool)
 
 	app := echo.New()
 
