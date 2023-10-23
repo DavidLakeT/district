@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"district/controller"
+	controllerPool "district/controller/handler"
 	"district/database"
 	"district/repository"
 	repositoryPool "district/repository/handler"
@@ -46,6 +47,7 @@ func main() {
 	productController := controller.NewProductController(servicePool)
 	reviewController := controller.NewReviewController(servicePool)
 	userController := controller.NewUserController(servicePool)
+	controllerPool := controllerPool.NewControllerPool(authController, productController, reviewController, userController)
 
 	app := echo.New()
 
@@ -58,23 +60,23 @@ func main() {
 	}))
 
 	// Auth-related endpoints.
-	app.POST("api/auth/login", authController.LoginUser)
+	app.POST("api/auth/login", controllerPool.AuthController.LoginUser)
 
 	// Product-related endpoints
-	app.GET("api/product", productController.GetAllProducts)
-	app.GET("api/product/id/:id", productController.SearchProductsById)
-	app.GET("api/product/name/:name", productController.SearchProductsByName)
-	app.POST("api/product", productController.CreateProduct)
+	app.GET("api/product", controllerPool.ProductController.GetAllProducts)
+	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)
+	app.GET("api/product/name/:name", controllerPool.ProductController.SearchProductsByName)
+	app.POST("api/product", controllerPool.ProductController.CreateProduct)
 
 	// Review-related endpoints
-	app.GET("api/review/:id", reviewController.GetReviewById)
-	app.POST("api/review", reviewController.CreateReview)
+	app.GET("api/review/:id", controllerPool.ReviewController.GetReviewById)
+	app.POST("api/review", controllerPool.ReviewController.CreateReview)
 
 	// User-related endpoints
-	app.GET("api/user/:id", userController.GetUserById)
-	app.POST("api/user", userController.CreateUser)
-	app.PUT("api/user/:id", userController.UpdateUser)
-	app.DELETE("api/user/:id", userController.DeleteUser)
+	app.GET("api/user/:id", controllerPool.UserController.GetUserById)
+	app.POST("api/user", controllerPool.UserController.CreateUser)
+	app.PUT("api/user/:id", controllerPool.UserController.UpdateUser)
+	app.DELETE("api/user/:id", controllerPool.UserController.DeleteUser)
 
 	app.Logger.Fatal(app.Start(":5000"))
 }
