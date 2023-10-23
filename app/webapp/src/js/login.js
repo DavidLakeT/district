@@ -1,5 +1,6 @@
 import axios from 'axios';
 import store from '@/store';
+import { decodeAuthToken } from '@/js/auth.js'
 
 export default {
   name: "LoginFetcher",
@@ -56,19 +57,3 @@ export default {
     },
   }
 };
-
-function decodeAuthToken(authToken) {
-  try {
-    const decoded = atob(authToken);
-    const [userId, username, email, isAdmin] = decoded.split(':');
-    return {
-      userId,
-      username,
-      email,
-      isAdmin: isAdmin === 'true',
-    };
-  } catch (error) {
-    console.error('Error decoding auth token:', error);
-    return null;
-  }
-}

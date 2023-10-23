@@ -16,7 +16,7 @@
 <script>
 export default {
   props: {
-    product: Object, // Pass the product data as a prop
+    product: Object,
   },
   methods: {
     addToCart() {

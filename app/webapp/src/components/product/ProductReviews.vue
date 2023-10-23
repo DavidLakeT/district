@@ -4,11 +4,11 @@
     <div v-if="reviews.length === 0" class="no-reviews">No reviews yet.</div>
     <ul v-else class="list-group">
       <li v-for="(review, index) in reviews" :key="index" class="list-group-item">
-        <div class="review-author">{{ review.author }}</div>
+        <div class="review-author">{{ review.user_email }}</div>
         <div class="review-rating">
           <span v-for="star in review.rating" :key="star" class="star">&#9733;</span>
         </div>
-        <div class="review-text">{{ review.text }}</div>
+        <div class="review-text">{{ review.content }}</div>
         <div class="review-date">{{ review.date }}</div>
       </li>
     </ul>
@@ -56,7 +56,7 @@ export default {
         user_id: "",
         rating: 1,
         content: "",
-        product_id: this.product.id,
+        product_id: parseInt(this.$route.params.id, 10),
       },
     };
   },
@@ -68,6 +68,7 @@ export default {
       try {
         const response = await submitReviewForm(this.newReview);
         if(response){
+          window.location.reload();
           this.toggleReviewForm();
         }
       } catch (error) {

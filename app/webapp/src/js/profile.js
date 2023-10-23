@@ -14,7 +14,7 @@ export default {
         async fetchUserProfile(userId) {
           try {
             const response = await axios.get(`http://localhost:5000/api/user/${userId}`);
-            this.editedUser = { ...response.data };
+            this.editedUser = response.data.user;
           } catch (error) {
             console.error('Error fetching user profile:', error);
           }

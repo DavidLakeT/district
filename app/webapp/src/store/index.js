@@ -19,7 +19,8 @@ const authModule = {
     },
     logout(state) {
         state.authToken = null;
-        state.user = null;
+        state.userId = null;
+        state.userRole = null;
     },
   },
   getters: {
