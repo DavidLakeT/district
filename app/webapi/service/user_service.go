@@ -4,23 +4,23 @@ import (
 	controller "district/controller/request"
 	"district/model"
 	dto "district/model/dto"
-	"district/repository"
+	repository "district/repository/handler"
 )
 
 type UserService struct {
-	userRepository *repository.UserRepository
+	repositoryPool *repository.RepositoryPool
 }
 
-func NewUserService(userRepository *repository.UserRepository) *UserService {
-	return &UserService{userRepository: userRepository}
+func NewUserService(repositoryPool *repository.RepositoryPool) *UserService {
+	return &UserService{repositoryPool: repositoryPool}
 }
 
 func (s *UserService) CreateUser(user *model.User) error {
-	return s.userRepository.CreateUser(user)
+	return s.repositoryPool.GetUserRepository().CreateUser(user)
 }
 
 func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO, error) {
-	user, err := s.userRepository.GetUserByIdentification(identification)
+	user, err := s.repositoryPool.GetUserRepository().GetUserByIdentification(identification)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO,
 }
 
 func (s *UserService) UpdateUser(identification int, request *controller.UpdateUserRequest) error {
-	user, err := s.userRepository.GetUserByIdentification(identification)
+	user, err := s.repositoryPool.GetUserRepository().GetUserByIdentification(identification)
 	if err != nil {
 		return err
 	}
@@ -47,9 +47,9 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 		user.IsAdmin = request.IsAdmin
 	}
 
-	return s.userRepository.UpdateUser(user)
+	return s.repositoryPool.GetUserRepository().UpdateUser(user)
 }
 
 func (s *UserService) DeleteUserByIdentification(identification int) error {
-	return s.userRepository.DeleteUser(identification)
+	return s.repositoryPool.GetUserRepository().DeleteUser(identification)
 }

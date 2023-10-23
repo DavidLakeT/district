@@ -6,6 +6,7 @@ import (
 	"district/controller"
 	"district/database"
 	"district/repository"
+	repositoryPool "district/repository/handler"
 	"district/service"
 
 	"github.com/joho/godotenv"
@@ -29,13 +30,15 @@ func main() {
 		log.Fatal(dbError)
 	}
 
-	userRepository := repository.NewUserRepository(db)
 	productRepository := repository.NewProductRepository(db)
 	reviewRepository := repository.NewReviewRepository(db)
-	authService := service.NewAuthService(userRepository)
-	productService := service.NewProductService(productRepository)
-	reviewService := service.NewReviewService(reviewRepository, userRepository)
-	userService := service.NewUserService(userRepository)
+	userRepository := repository.NewUserRepository(db)
+	repositoryPool := repositoryPool.NewRepositoryPool(productRepository, reviewRepository, userRepository)
+
+	authService := service.NewAuthService(repositoryPool)
+	productService := service.NewProductService(repositoryPool)
+	reviewService := service.NewReviewService(repositoryPool)
+	userService := service.NewUserService(repositoryPool)
 	authController := controller.NewAuthController(authService)
 	productController := controller.NewProductController(productService)
 	reviewController := controller.NewReviewController(reviewService)
