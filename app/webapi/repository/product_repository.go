@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"district/model"
-	"errors"
 	"fmt"
 )
 
@@ -63,6 +62,26 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 	return products, nil
 }
 
+func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
+	product := &model.Product{}
+	err := r.db.QueryRow("SELECT id, name, description, stock, price FROM products WHERE id = $1 AND deleted_at IS NULL", id).Scan(&product.ID, &product.Name, &product.Description, &product.Stock, &product.Price)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("product with ID %d not found", id)
+		}
+		return nil, fmt.Errorf("failed to get product: %w", err)
+	}
+
+	reviews, err := r.getProductReviews(product.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+	}
+
+	product.Reviews = reviews
+
+	return product, nil
+}
+
 func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
 	rows, err := r.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
 	if err != nil {
@@ -102,7 +121,7 @@ func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, e
 	reviews := make([]*model.Review, 0)
 	for rows.Next() {
 		review := &model.Review{}
-		err := rows.Scan(&review.ID, &review.ProductID, &review.AuthorID, &review.Content)
+		err := rows.Scan(&review.ID, &review.ProductID, &review.UserID, &review.Content)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get reviews: %w", err)
 		}
@@ -117,23 +136,19 @@ func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, e
 }
 
 func (r *ProductRepository) UpdateProduct(product *model.Product) error {
-	query := "SELECT deleted_at FROM users WHERE identification = $1"
-	var deletedAt sql.NullTime
-	err := r.db.QueryRow(query, product.ID).Scan(&deletedAt)
+	query := "UPDATE products SET name = $1, price = $2 WHERE id = $3 AND deleted_at IS NULL"
+	result, err := r.db.Exec(query, product.Name, product.Price, product.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("product not found: %w", err)
-		}
-		return fmt.Errorf("failed to get user: %w", err)
-	}
-	if deletedAt.Valid {
-		return fmt.Errorf("product has been deleted")
+		return fmt.Errorf("failed to update product: %w", err)
 	}
 
-	query = "UPDATE products SET name = $1, price = $2 WHERE identification = $3"
-	_, err = r.db.Exec(query, product.Name, product.Price, product.ID)
+	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("product not found or has been deleted")
 	}
 
 	return nil
