@@ -8,19 +8,18 @@ import (
 	request "district/controller/request"
 	"district/model"
 	dto "district/model/dto"
-	service "district/service"
+	services "district/service"
+	service "district/service/handler"
 
 	"github.com/labstack/echo/v4"
 )
 
 type UserController struct {
-	userService *service.UserService
+	servicePool *service.ServicePool
 }
 
-func NewUserController(userService *service.UserService) *UserController {
-	return &UserController{
-		userService: userService,
-	}
+func NewUserController(servicePool *service.ServicePool) *UserController {
+	return &UserController{servicePool: servicePool}
 }
 
 // Endpoint: POST /api/user
@@ -32,7 +31,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}
 
-	hashedPassword, err := service.HashPassword(request.Password)
+	hashedPassword, err := services.HashPassword(request.Password)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
@@ -47,7 +46,7 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		IsAdmin:        request.IsAdmin,
 	}
 
-	if err := uc.userService.CreateUser(&user); err != nil {
+	if err := uc.servicePool.UserService.CreateUser(&user); err != nil {
 		fmt.Println("error:", err.Error())
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
@@ -63,7 +62,7 @@ func (uc *UserController) GetUserById(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	user, err := uc.userService.GetUserByIdentification(identification)
+	user, err := uc.servicePool.UserService.GetUserByIdentification(identification)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{"error": err.Error()})
 	}
@@ -84,7 +83,7 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}
 
-	if err := uc.userService.UpdateUser(identification, &request); err != nil {
+	if err := uc.servicePool.UserService.UpdateUser(identification, &request); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
@@ -99,7 +98,7 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	if err := uc.userService.DeleteUserByIdentification(identification); err != nil {
+	if err := uc.servicePool.UserService.DeleteUserByIdentification(identification); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 

@@ -3,25 +3,21 @@ package service
 import (
 	"district/model"
 	dto "district/model/dto"
-	"district/repository"
+	repository "district/repository/handler"
 	"encoding/base64"
 	"strconv"
 	"strings"
 )
 
 type ReviewService struct {
-	reviewRepository *repository.ReviewRepository
-	userRepository   *repository.UserRepository
+	repositoryPool *repository.RepositoryPool
 }
 
-func NewReviewService(reviewRepository *repository.ReviewRepository, userRepository *repository.UserRepository) *ReviewService {
-	return &ReviewService{
-		reviewRepository: reviewRepository,
-		userRepository:   userRepository,
-	}
+func NewReviewService(repositoryPool *repository.RepositoryPool) *ReviewService {
+	return &ReviewService{repositoryPool: repositoryPool}
 }
 
-func (r *ReviewService) CreateReview(token string, review *model.Review) error {
+func (rs *ReviewService) CreateReview(token string, review *model.Review) error {
 	decodedToken, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
 		return err
@@ -33,18 +29,18 @@ func (r *ReviewService) CreateReview(token string, review *model.Review) error {
 		return err
 	}
 
-	user, err := r.userRepository.GetUserByIdentification(identification)
+	user, err := rs.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return err
 	}
 
 	review.UserID = user.Identification
 
-	return r.reviewRepository.CreateReview(review)
+	return rs.repositoryPool.ReviewRepository.CreateReview(review)
 }
 
-func (r *ReviewService) GetReviewById(id int) (*dto.ReviewDTO, error) {
-	review, err := r.reviewRepository.GetReviewById(id)
+func (rs *ReviewService) GetReviewById(id int) (*dto.ReviewDTO, error) {
+	review, err := rs.repositoryPool.ReviewRepository.GetReviewById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -54,11 +50,11 @@ func (r *ReviewService) GetReviewById(id int) (*dto.ReviewDTO, error) {
 	return reviewDto, nil
 }
 
-func (r *ReviewService) UpdateReview(review *model.Review) error {
-	_, err := r.reviewRepository.GetReviewById(review.ID)
+func (rs *ReviewService) UpdateReview(review *model.Review) error {
+	_, err := rs.repositoryPool.ReviewRepository.GetReviewById(review.ID)
 	if err != nil {
 		return err
 	}
 
-	return r.reviewRepository.UpdateReview(review)
+	return rs.repositoryPool.ReviewRepository.UpdateReview(review)
 }

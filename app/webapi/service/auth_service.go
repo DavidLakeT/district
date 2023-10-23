@@ -1,7 +1,7 @@
 package service
 
 import (
-	"district/repository"
+	repository "district/repository/handler"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -10,17 +10,15 @@ import (
 )
 
 type AuthService struct {
-	userRepository *repository.UserRepository
+	repositoryPool *repository.RepositoryPool
 }
 
-func NewAuthService(userRepository *repository.UserRepository) *AuthService {
-	return &AuthService{
-		userRepository: userRepository,
-	}
+func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
+	return &AuthService{repositoryPool: repositoryPool}
 }
 
-func (s *AuthService) Login(email, password string) (string, error) {
-	user, err := s.userRepository.GetUserByEmail(email)
+func (as *AuthService) Login(email, password string) (string, error) {
+	user, err := as.repositoryPool.UserRepository.GetUserByEmail(email)
 	if err != nil {
 		return "", err
 	}

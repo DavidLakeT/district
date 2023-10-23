@@ -4,9 +4,12 @@ import (
 	"log"
 
 	"district/controller"
+	controllerPool "district/controller/handler"
 	"district/database"
 	"district/repository"
+	repositoryPool "district/repository/handler"
 	"district/service"
+	servicePool "district/service/handler"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -29,17 +32,22 @@ func main() {
 		log.Fatal(dbError)
 	}
 
-	userRepository := repository.NewUserRepository(db)
 	productRepository := repository.NewProductRepository(db)
 	reviewRepository := repository.NewReviewRepository(db)
-	authService := service.NewAuthService(userRepository)
-	productService := service.NewProductService(productRepository)
-	reviewService := service.NewReviewService(reviewRepository, userRepository)
-	userService := service.NewUserService(userRepository)
-	authController := controller.NewAuthController(authService)
-	productController := controller.NewProductController(productService)
-	reviewController := controller.NewReviewController(reviewService)
-	userController := controller.NewUserController(userService)
+	userRepository := repository.NewUserRepository(db)
+	repositoryPool := repositoryPool.NewRepositoryPool(productRepository, reviewRepository, userRepository)
+
+	authService := service.NewAuthService(repositoryPool)
+	productService := service.NewProductService(repositoryPool)
+	reviewService := service.NewReviewService(repositoryPool)
+	userService := service.NewUserService(repositoryPool)
+	servicePool := servicePool.NewServicePool(authService, productService, reviewService, userService)
+
+	authController := controller.NewAuthController(servicePool)
+	productController := controller.NewProductController(servicePool)
+	reviewController := controller.NewReviewController(servicePool)
+	userController := controller.NewUserController(servicePool)
+	controllerPool := controllerPool.NewControllerPool(authController, productController, reviewController, userController)
 
 	app := echo.New()
 
@@ -52,23 +60,23 @@ func main() {
 	}))
 
 	// Auth-related endpoints.
-	app.POST("api/auth/login", authController.LoginUser)
+	app.POST("api/auth/login", controllerPool.AuthController.LoginUser)
 
 	// Product-related endpoints
-	app.GET("api/product", productController.GetAllProducts)
-	app.GET("api/product/id/:id", productController.SearchProductsById)
-	app.GET("api/product/name/:name", productController.SearchProductsByName)
-	app.POST("api/product", productController.CreateProduct)
+	app.GET("api/product", controllerPool.ProductController.GetAllProducts)
+	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)
+	app.GET("api/product/name/:name", controllerPool.ProductController.SearchProductsByName)
+	app.POST("api/product", controllerPool.ProductController.CreateProduct)
 
 	// Review-related endpoints
-	app.GET("api/review/:id", reviewController.GetReviewById)
-	app.POST("api/review", reviewController.CreateReview)
+	app.GET("api/review/:id", controllerPool.ReviewController.GetReviewById)
+	app.POST("api/review", controllerPool.ReviewController.CreateReview)
 
 	// User-related endpoints
-	app.GET("api/user/:id", userController.GetUserById)
-	app.POST("api/user", userController.CreateUser)
-	app.PUT("api/user/:id", userController.UpdateUser)
-	app.DELETE("api/user/:id", userController.DeleteUser)
+	app.GET("api/user/:id", controllerPool.UserController.GetUserById)
+	app.POST("api/user", controllerPool.UserController.CreateUser)
+	app.PUT("api/user/:id", controllerPool.UserController.UpdateUser)
+	app.DELETE("api/user/:id", controllerPool.UserController.DeleteUser)
 
 	app.Logger.Fatal(app.Start(":5000"))
 }

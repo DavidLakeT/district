@@ -3,7 +3,7 @@ package controller
 import (
 	request "district/controller/request"
 	"district/model"
-	"district/service"
+	service "district/service/handler"
 	"net/http"
 	"strconv"
 
@@ -11,11 +11,11 @@ import (
 )
 
 type ReviewController struct {
-	reviewService *service.ReviewService
+	servicePool *service.ServicePool
 }
 
-func NewReviewController(reviewService *service.ReviewService) *ReviewController {
-	return &ReviewController{reviewService: reviewService}
+func NewReviewController(servicePool *service.ServicePool) *ReviewController {
+	return &ReviewController{servicePool: servicePool}
 }
 
 // Endpoint: POST /api/review
@@ -42,7 +42,7 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 		})
 	}
 
-	if err := rc.reviewService.CreateReview(token.Value, &review); err != nil {
+	if err := rc.servicePool.ReviewService.CreateReview(token.Value, &review); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -64,7 +64,7 @@ func (rc *ReviewController) GetReviewById(c echo.Context) error {
 		})
 	}
 
-	review, err := rc.reviewService.GetReviewById(id)
+	review, err := rc.servicePool.ReviewService.GetReviewById(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"error": "review not found",
