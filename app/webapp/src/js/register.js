@@ -22,7 +22,7 @@ export default {
           username: this.username,
           password: this.password,
           address: this.address,
-          isadmin: false
+          isAdmin: false
         });
         console.log('User registered:', response.data);
         this.$router.push('/login');

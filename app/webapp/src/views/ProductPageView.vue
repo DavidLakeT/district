@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <product-reviews :reviews="reviews" />
+    <product-reviews :reviews="reviews" :product="product" />
   </div>
 </template>
 
@@ -31,24 +31,18 @@ export default {
     };
   },
   computed: {
-    /*imageUrl() {
-      return `/images/product${this.product.id}.jpg`;
-    },*/
+    imageUrl() {
+      return `/images/product${this.$route.params.id}.jpg`;
+    },
   },
   async created() {
     try {
-      const productName = this.$route.params.id;
-      const data = await fetchProductDetails(productName);
-      this.product = data.product;
-      this.reviews = data.reviews;
+      const product = await fetchProductDetails(this.$route.params.id);
+      this.product = product;
+      this.reviews = product.reviews;
     } catch (error) {
       console.error('Error fetching product data:', error);
     }
   },
 };
 </script>
-
-<style scoped>
-/* View-specific styles */
-</style>
-

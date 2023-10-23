@@ -31,7 +31,7 @@
       </div>
       <div class="form-group">
         <label for="text">Review:</label>
-        <textarea v-model="newReview.text" class="form-control" id="text" rows="3" required></textarea>
+        <textarea v-model="newReview.content" class="form-control" id="content" rows="3" required></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Submit Review</button>
     </form>
@@ -40,8 +40,10 @@
 </template>
 
 <script>
+import { submitReviewForm } from '@/js/review.js'
 export default {
   props: {
+    product: Object,
     reviews: {
       type: Array,
       default: () => [],
@@ -53,22 +55,26 @@ export default {
       newReview: {
         author: "",
         rating: 1,
-        text: "",
+        content: "",
+        product_id: this.product.id,
       },
     };
   },
   methods: {
-    submitReview() {
-      // Implement submitting the review (you can send it to a server or handle it locally)
-      console.log("New review submitted:", this.newReview);
-
-      // Reset the newReview object and hide the form
-      this.newReview = { author: "", rating: 1, text: "" };
-      this.showReviewForm = false;
-    },
     toggleReviewForm() {
       this.showReviewForm = !this.showReviewForm;
     },
+    async submitReview() {
+      try {
+        const authToken = this.$store.getters['auth/authToken'];
+        const response = await submitReviewForm(this.newReview, authToken);
+        if(response){
+          this.toggleReviewForm();
+        }
+      } catch (error) {
+        console.error('Error submitting review:', error);
+      }
+    }
   },
 };
 </script>

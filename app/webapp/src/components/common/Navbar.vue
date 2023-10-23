@@ -13,11 +13,16 @@
           <router-link to="/products" class="nav-link">Products</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/mycart" class="nav-link" v-if="isAuthenticated">Cart</router-link>
+          <router-link to="/mycart" class="nav-link" v-if="isAuthenticated && userRole != true">Cart</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/admin/product/create" class="nav-link" v-if="isAuthenticated && userRole == true">Create</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link v-if="isAuthenticated" :to="'/profile/' + userId" class="nav-link">My Profile</router-link>
         </li>
         <li class="nav-item">
           <router-link to="/login" class="nav-link" v-if="!isAuthenticated">Sign in</router-link>
-          <!--<router-link v-if="isAuthenticated" :to="'/profile/' + user.id">My Profile</router-link>-->
         </li>
         <li class="nav-item" v-if="isAuthenticated" >
           <LogoutButton />
@@ -39,8 +44,11 @@ export default {
     isAuthenticated() {
       return this.$store.getters['auth/isAuthenticated'];
     },
-    user() {
-      return this.$store.getters['auth/isAuthenticated'];
+    userId() {
+      return this.$store.getters['auth/userId'];
+    },
+    userRole() {
+      return this.$store.getters['auth/isAdmin'];
     },
   },
 };

@@ -27,10 +27,20 @@ export default {
 
         if (response.status === 302 || response.data.auth_token) {
           this.$root.authToken = response.data.auth_token;
-          //document.cookie = `auth_token=${response.data.auth_token}; path=/`;
-          store.commit('auth/setAuthToken', response.data.auth_token);
-          //store.commit('auth/setUser', response.data.user);
-          this.$router.push('/products');
+          document.cookie = `auth_token=${response.data.auth_token}; path=/; SameSite=None;`;
+          
+          const user = decodeAuthToken(response.data.auth_token);
+          if (user) {
+            store.commit('auth/setAuthToken', response.data.auth_token);
+            store.commit('auth/setUserId', user.userId);
+            store.commit('auth/setUserRole', !user.isAdmin);
+            console.log(user.username)
+            if (!user.isAdmin){
+              this.$router.push('/admin/product/create');
+            } else {
+              this.$router.push('/products');
+            }
+          }
         } else {
           this.loginError = 'Incorrect credentials. Please try again.';
         }
@@ -43,6 +53,22 @@ export default {
           this.loginError = 'An error occurred. Please try again.';
         }
       }
-    }
+    },
   }
 };
+
+function decodeAuthToken(authToken) {
+  try {
+    const decoded = atob(authToken);
+    const [userId, username, email, isAdmin] = decoded.split(':');
+    return {
+      userId,
+      username,
+      email,
+      isAdmin: isAdmin === 'true',
+    };
+  } catch (error) {
+    console.error('Error decoding auth token:', error);
+    return null;
+  }
+}

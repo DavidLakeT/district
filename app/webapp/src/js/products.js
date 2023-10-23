@@ -22,9 +22,9 @@ export const createProduct = async (productData) => {
   }
 };
 
-export const fetchProductDetails = async (productName) => {
+export const fetchProductDetails = async (productId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/product/${productName}`);
+    const response = await axios.get(`${BASE_URL}/api/product/id/${productId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching product details:', error);
