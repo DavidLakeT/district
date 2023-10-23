@@ -54,6 +54,24 @@ func (rr *ReviewRepository) UpdateReview(review *model.Review) error {
 	return nil
 }
 
+func (rr *ReviewRepository) DeleteReview(id int) error {
+	query := `UPDATE reviews SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL`
+	result, err := rr.db.Exec(query, id)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to delete review: %v", err))
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to get rows affected: %v", err))
+	}
+	if rowsAffected == 0 {
+		return errors.New(fmt.Sprintf("review with id %d not found", id))
+	}
+
+	return nil
+}
+
 func (rr *ReviewRepository) GetProductReviews(productID int) ([]*model.Review, error) {
 	rows, err := rr.db.Query("SELECT id, product_id, user_id, content FROM reviews WHERE product_id = $1", productID)
 	if err != nil {
