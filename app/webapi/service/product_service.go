@@ -3,54 +3,73 @@ package service
 import (
 	"district/model"
 	dto "district/model/dto"
-	"district/repository"
+	repository "district/repository/handler"
+	"fmt"
 )
 
 type ProductService struct {
-	productRepository *repository.ProductRepository
+	repositoryPool *repository.RepositoryPool
 }
 
-func NewProductService(productRepository *repository.ProductRepository) *ProductService {
-	return &ProductService{productRepository: productRepository}
+func NewProductService(repositoryPool *repository.RepositoryPool) *ProductService {
+	return &ProductService{repositoryPool: repositoryPool}
 }
 
-func (p *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
-	products, err := p.productRepository.GetAllProducts()
+func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
+	products, err := ps.repositoryPool.ProductRepository.GetAllProducts()
 	if err != nil {
 		return nil, err
 	}
 
 	productDTOs := make([]*dto.ProductDTO, len(products))
 	for i, product := range products {
+		reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+		}
+
+		product.Reviews = reviews
 		productDTOs[i] = dto.ConvertToProductDTO(product)
 	}
 
 	return productDTOs, nil
 }
 
-func (p *ProductService) CreateProduct(product *model.Product) error {
-	return p.productRepository.CreateProduct(product)
+func (ps *ProductService) CreateProduct(product *model.Product) error {
+	return ps.repositoryPool.ProductRepository.CreateProduct(product)
 }
 
-func (p *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
-	product, err := p.productRepository.GetProductByID(id)
+func (ps *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
+	product, err := ps.repositoryPool.ProductRepository.GetProductByID(id)
 	if err != nil {
 		return nil, err
 	}
+
+	reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+	}
+	product.Reviews = reviews
 
 	productDTO := dto.ConvertToProductDTO(product)
 
 	return productDTO, nil
 }
 
-func (p *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, error) {
-	products, err := p.productRepository.GetProductsByName(name)
+func (ps *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, error) {
+	products, err := ps.repositoryPool.ProductRepository.GetProductsByName(name)
 	if err != nil {
 		return nil, err
 	}
 
 	productDTOs := make([]*dto.ProductDTO, len(products))
 	for i, product := range products {
+		reviews, err := ps.repositoryPool.ReviewRepository.GetProductReviews(product.ID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
+		}
+		product.Reviews = reviews
+
 		productDTOs[i] = dto.ConvertToProductDTO(product)
 	}
 

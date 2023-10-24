@@ -2,20 +2,18 @@ package controller
 
 import (
 	request "district/controller/request"
-	"district/service"
+	service "district/service/handler"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type AuthController struct {
-	authService *service.AuthService
+	servicePool *service.ServicePool
 }
 
-func NewAuthController(authService *service.AuthService) *AuthController {
-	return &AuthController{
-		authService: authService,
-	}
+func NewAuthController(servicePool *service.ServicePool) *AuthController {
+	return &AuthController{servicePool: servicePool}
 }
 
 // Endpoint: POST /api/auth/login
@@ -29,7 +27,7 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 		})
 	}
 
-	token, err := ac.authService.Login(request.Email, request.Password)
+	token, err := ac.servicePool.AuthService.Login(request.Email, request.Password)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
@@ -39,7 +37,7 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 	c.SetCookie(&http.Cookie{
 		Name:     "auth_token",
 		Value:    token,
-		HttpOnly: false,
+		HttpOnly: true,
 		Path:     "/",
 	})
 

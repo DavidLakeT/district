@@ -3,7 +3,7 @@ package controller
 import (
 	request "district/controller/request"
 	models "district/model"
-	"district/service"
+	service "district/service/handler"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -12,19 +12,17 @@ import (
 )
 
 type ProductController struct {
-	productService *service.ProductService
+	servicePool *service.ServicePool
 }
 
-func NewProductController(productService *service.ProductService) *ProductController {
-	return &ProductController{
-		productService: productService,
-	}
+func NewProductController(servicePool *service.ServicePool) *ProductController {
+	return &ProductController{servicePool: servicePool}
 }
 
 // Endpoint: GET /api/products
 // - Retrieves information about all products (name, description, price, etc).
 func (pc *ProductController) GetAllProducts(c echo.Context) error {
-	products, err := pc.productService.GetAllProducts()
+	products, err := pc.servicePool.ProductService.GetAllProducts()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
@@ -52,7 +50,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 		Price:       request.Price,
 	}
 
-	if err := pc.productService.CreateProduct(&product); err != nil {
+	if err := pc.servicePool.ProductService.CreateProduct(&product); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -75,7 +73,7 @@ func (pc *ProductController) SearchProductsById(c echo.Context) error {
 		})
 	}
 
-	product, err := pc.productService.GetProductById(id)
+	product, err := pc.servicePool.ProductService.GetProductById(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"error": err.Error(),
@@ -90,7 +88,7 @@ func (pc *ProductController) SearchProductsById(c echo.Context) error {
 func (pc *ProductController) SearchProductsByName(c echo.Context) error {
 	name := c.Param("name")
 
-	products, err := pc.productService.GetProductsByName(name)
+	products, err := pc.servicePool.ProductService.GetProductsByName(name)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"error": err.Error(),

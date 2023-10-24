@@ -5,7 +5,7 @@ import "district/model"
 type ReviewDTO struct {
 	ID        int    `json:"id"`
 	ProductID int    `json:"product_id"`
-	UserEmail string `json:"user_email"`
+	UserID    int    `json:"user_id"`
 	Content   string `json:"content"`
 }
 
@@ -13,7 +13,7 @@ func ConvertToReviewDTO(review *model.Review) *ReviewDTO {
 	return &ReviewDTO{
 		ID:        review.ID,
 		ProductID: review.ProductID,
-		UserEmail: review.UserEmail,
+		UserID:    review.UserID,
 		Content:   review.Content,
 	}
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"district/repository"
+	repository "district/repository/handler"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -10,17 +10,15 @@ import (
 )
 
 type AuthService struct {
-	userRepository *repository.UserRepository
+	repositoryPool *repository.RepositoryPool
 }
 
-func NewAuthService(userRepository *repository.UserRepository) *AuthService {
-	return &AuthService{
-		userRepository: userRepository,
-	}
+func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
+	return &AuthService{repositoryPool: repositoryPool}
 }
 
-func (s *AuthService) Login(email, password string) (string, error) {
-	user, err := s.userRepository.GetUserByEmail(email)
+func (as *AuthService) Login(email, password string) (string, error) {
+	user, err := as.repositoryPool.UserRepository.GetUserByEmail(email)
 	if err != nil {
 		return "", err
 	}
@@ -29,12 +27,7 @@ func (s *AuthService) Login(email, password string) (string, error) {
 		return "", errors.New("wrong credentials")
 	}
 
-	admin := true
-	if user.IsAdmin == nil {
-		admin = false
-	}
-
-	token := fmt.Sprintf("%d:%s:%s:%v", user.Identification, user.Username, user.Email, admin)
+	token := fmt.Sprintf("%d:%s:%s:%v", user.Identification, user.Username, user.Email, user.IsAdmin)
 	encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
 
 	return encodedToken, nil

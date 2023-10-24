@@ -47,11 +47,7 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to get products: %w", err)
 		}
-		reviews, err := r.getProductReviews(product.ID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
-		}
-		product.Reviews = reviews
+
 		products = append(products, product)
 	}
 
@@ -72,13 +68,6 @@ func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
 		return nil, fmt.Errorf("failed to get product: %w", err)
 	}
 
-	reviews, err := r.getProductReviews(product.ID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
-	}
-
-	product.Reviews = reviews
-
 	return product, nil
 }
 
@@ -96,11 +85,7 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 		if err != nil {
 			return nil, fmt.Errorf("failed to get products: %w", err)
 		}
-		reviews, err := r.getProductReviews(product.ID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get reviews for product %d: %w", product.ID, err)
-		}
-		product.Reviews = reviews
+
 		products = append(products, product)
 	}
 
@@ -109,30 +94,6 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 	}
 
 	return products, nil
-}
-
-func (r *ProductRepository) getProductReviews(productID int) ([]*model.Review, error) {
-	rows, err := r.db.Query("SELECT id, product_id, user_email, content FROM reviews WHERE product_id = $1", productID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get reviews: %w", err)
-	}
-	defer rows.Close()
-
-	reviews := make([]*model.Review, 0)
-	for rows.Next() {
-		review := &model.Review{}
-		err := rows.Scan(&review.ID, &review.ProductID, &review.UserEmail, &review.Content)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get reviews: %w", err)
-		}
-		reviews = append(reviews, review)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("failed to get reviews: %w", err)
-	}
-
-	return reviews, nil
 }
 
 func (r *ProductRepository) UpdateProduct(product *model.Product) error {

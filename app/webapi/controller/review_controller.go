@@ -3,7 +3,7 @@ package controller
 import (
 	request "district/controller/request"
 	"district/model"
-	"district/service"
+	service "district/service/handler"
 	"net/http"
 	"strconv"
 
@@ -11,11 +11,11 @@ import (
 )
 
 type ReviewController struct {
-	reviewService *service.ReviewService
+	servicePool *service.ServicePool
 }
 
-func NewReviewController(reviewService *service.ReviewService) *ReviewController {
-	return &ReviewController{reviewService: reviewService}
+func NewReviewController(servicePool *service.ServicePool) *ReviewController {
+	return &ReviewController{servicePool: servicePool}
 }
 
 // Endpoint: POST /api/review
@@ -36,13 +36,12 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 
 	token, err := c.Cookie("auth_token")
 	if err != nil {
-		print("ERROR: ", err.Error())
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"error": "you must be logged in to create a review",
 		})
 	}
 
-	if err := rc.reviewService.CreateReview(token.Value, &review); err != nil {
+	if err := rc.servicePool.ReviewService.CreateReview(token.Value, &review); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -64,7 +63,7 @@ func (rc *ReviewController) GetReviewById(c echo.Context) error {
 		})
 	}
 
-	review, err := rc.reviewService.GetReviewById(id)
+	review, err := rc.servicePool.ReviewService.GetReviewById(id)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"error": "review not found",
@@ -72,4 +71,23 @@ func (rc *ReviewController) GetReviewById(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, review)
+}
+
+// Endpoint: DELETE /api/review/:id
+// - Deletes the review with the specified ID.
+func (rc *ReviewController) DeleteReviewById(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid review ID",
+		})
+	}
+
+	if err := rc.servicePool.ReviewService.DeleteReview(id); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Review succesfully deleted."})
 }

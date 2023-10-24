@@ -11,7 +11,7 @@ type User struct {
 	Password       string  `json:"password"`
 	Address        string  `json:"address"`
 	Balance        float64 `json:"balance"`
-	IsAdmin        *bool   `json:"isAdmin"`
+	IsAdmin        bool    `json:"isAdmin"`
 	CreatedAt      sql.NullTime
 	UpdatedAt      sql.NullTime
 	DeletedAt      sql.NullTime
