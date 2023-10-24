@@ -36,14 +36,18 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
+	admin := false
+	if request.IsAdmin != nil {
+		admin = *request.IsAdmin
+	}
+
 	user := model.User{
 		Identification: request.Identification,
 		Email:          request.Email,
 		Username:       request.Username,
 		Password:       hashedPassword,
 		Address:        request.Address,
-		Balance:        0,
-		IsAdmin:        request.IsAdmin,
+		IsAdmin:        admin,
 	}
 
 	if err := uc.servicePool.UserService.CreateUser(&user); err != nil {

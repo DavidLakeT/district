@@ -35,16 +35,23 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 	}
 
 	switch {
-	case request.Email != "":
-		user.Email = request.Email
-	case request.Username != "":
-		user.Username = request.Username
-	case request.Password != "":
-		user.Password = request.Password
-	case request.Address != "":
-		user.Address = request.Address
+	case request.Email != nil:
+		user.Email = *request.Email
+		fallthrough
+	case request.Username != nil:
+		user.Username = *request.Username
+		fallthrough
+	case request.Password != nil:
+		user.Password = *request.Password
+		fallthrough
+	case request.Address != nil:
+		user.Address = *request.Address
+		fallthrough
+	case request.Balance != nil:
+		user.Balance = *request.Balance
+		fallthrough
 	case request.IsAdmin != nil:
-		user.IsAdmin = request.IsAdmin
+		user.IsAdmin = *request.IsAdmin
 	}
 
 	return s.repositoryPool.UserRepository.UpdateUser(user)
