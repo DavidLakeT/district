@@ -36,7 +36,6 @@ func (rc *ReviewController) CreateReview(c echo.Context) error {
 
 	token, err := c.Cookie("auth_token")
 	if err != nil {
-		print("ERROR: ", err.Error())
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"error": "you must be logged in to create a review",
 		})
@@ -72,4 +71,23 @@ func (rc *ReviewController) GetReviewById(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, review)
+}
+
+// Endpoint: DELETE /api/review/:id
+// - Deletes the review with the specified ID.
+func (rc *ReviewController) DeleteReviewById(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid review ID",
+		})
+	}
+
+	if err := rc.servicePool.ReviewService.DeleteReview(id); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Review succesfully deleted."})
 }

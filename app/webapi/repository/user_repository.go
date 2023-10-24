@@ -16,8 +16,8 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 }
 
 func (r *UserRepository) CreateUser(user *model.User) error {
-	query := "INSERT INTO users (identification, email, username, password, address, balance) VALUES ($1, $2, $3, $4, $5, $6)"
-	_, err := r.db.Exec(query, user.Identification, user.Email, user.Username, user.Password, user.Address, user.Balance)
+	query := "INSERT INTO users (identification, email, username, password, address) VALUES ($1, $2, $3, $4, $5)"
+	_, err := r.db.Exec(query, user.Identification, user.Email, user.Username, user.Password, user.Address)
 	if err != nil {
 		return fmt.Errorf("failed to create user: %w", err)
 	}
@@ -86,8 +86,8 @@ func (r *UserRepository) UpdateUser(user *model.User) error {
 		return fmt.Errorf("user has been deleted")
 	}
 
-	query = "UPDATE users SET email = $1, username = $2, address = $3 WHERE identification = $4"
-	_, err = r.db.Exec(query, user.Email, user.Username, user.Address, user.Identification)
+	query = "UPDATE users SET email = $1, username = $2, password = $3, address = $4, balance = $5, is_admin = $6 WHERE identification = $7"
+	_, err = r.db.Exec(query, user.Email, user.Username, user.Password, user.Address, user.Balance, user.IsAdmin, user.Identification)
 	if err != nil {
 		return fmt.Errorf("failed to update user: %w", err)
 	}
