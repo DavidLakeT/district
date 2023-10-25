@@ -16,7 +16,7 @@
           <router-link to="/mycart" class="nav-link" v-if="isAuthenticated && userRole != true">Cart</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/admin/product/create" class="nav-link" v-if="isAuthenticated && userRole == true">Create</router-link>
+          <router-link to="/admin/products/create" class="nav-link" v-if="isAuthenticated && userRole == true">Create</router-link>
         </li>
         <li class="nav-item">
           <router-link v-if="isAuthenticated" :to="'/profile/' + userId" class="nav-link">My Profile</router-link>

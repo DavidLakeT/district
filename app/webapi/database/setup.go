@@ -53,6 +53,7 @@ func SetupDatabase(db *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS reviews (
 		id SERIAL PRIMARY KEY,
 		user_id INTEGER NOT NULL,
+		user_email VARCHAR(60) NOT NULL,
 		product_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT NOW(),

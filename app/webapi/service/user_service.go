@@ -42,7 +42,11 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 		user.Username = *request.Username
 		fallthrough
 	case request.Password != nil:
-		user.Password = *request.Password
+		hashedPassword, err := HashPassword(*request.Password)
+		if err != nil {
+			return err
+		}
+		user.Password = hashedPassword
 		fallthrough
 	case request.Address != nil:
 		user.Address = *request.Address

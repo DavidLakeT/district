@@ -1,0 +1,51 @@
+
+.table {
+  font-size: 16px;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  padding: 12px;
+}
+
+.table td a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.table td a:hover {
+  text-decoration: underline;
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  margin-right: 1%;
+  font-size: 14px;
+}
+
+.btn.btn-info.btn-sm {
+    color: #fff; 
+    background-color: #17a2b8; 
+    border: none; 
+    outline: none !important;
+  }
+  
+  .btn.btn-info.btn-sm:hover {
+    background-color: #117a8b;
+    outline: none !important;
+  }
+
+  .btn.btn-info.btn-sm:focus {
+    outline: none;
+  }
+

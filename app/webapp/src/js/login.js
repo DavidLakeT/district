@@ -35,9 +35,8 @@ export default {
             store.commit('auth/setAuthToken', response.data.auth_token);
             store.commit('auth/setUserId', user.userId);
             store.commit('auth/setUserRole', user.isAdmin);
-            console.log(user.username)
-            if (!user.isAdmin){
-              this.$router.push('/admin/product/create');
+            if (user.isAdmin){
+              this.$router.push('/admin/products');
             } else {
               this.$router.push('/products');
             }

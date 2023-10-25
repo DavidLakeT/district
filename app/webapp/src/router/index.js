@@ -6,6 +6,7 @@ import MyCart from '@/views/CartView.vue';
 import Register from '@/views/Auth/RegisterView.vue';
 import Login from  '@/views/Auth/LoginView.vue';
 import UserProfile from '@/views/UserProfileView.vue';
+import ProductsAdmin from '@/views/Admin/ProductsView.vue';
 import ProductCreateForm from  '@/views/Admin/ProductCreateView.vue'
 import ProductUpdate from  '@/views/Admin/ProductUpdateView.vue'
 import store from '@/store';
@@ -42,6 +43,11 @@ const routes = [
   {
     path: '/profile/:userId',
     component: UserProfile,
+    meta: { requiresAuth: true },
+  },
+  { 
+    path: '/admin/products', 
+    component: ProductsAdmin,
     meta: { requiresAuth: true },
   },
   {

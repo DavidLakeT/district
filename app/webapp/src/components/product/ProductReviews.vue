@@ -4,7 +4,7 @@
     <div v-if="reviews.length === 0" class="no-reviews">No reviews yet.</div>
     <ul v-else class="list-group">
       <li v-for="(review, index) in reviews" :key="index" class="list-group-item">
-        <div class="review-author">{{ review.id }}</div>
+        <div class="review-author">{{ review.user_email }}</div>
         <div class="review-rating">
           <span v-for="star in review.rating" :key="star" class="star">&#9733;</span>
         </div>
@@ -79,7 +79,6 @@ export default {
       const isAdmin = this.$store.getters['auth/isAdmin'];
       const userId = parseInt(this.$store.getters['auth/userId'], 10);
       const reviewCreatorId = user_id;
-      console.log(user_id);
       return isAdmin || userId === reviewCreatorId;
     },
     async deleteRev(review_id){

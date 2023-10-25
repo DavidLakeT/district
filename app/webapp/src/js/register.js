@@ -15,6 +15,7 @@ export default {
   methods: {
     async registerUser() {
       try {
+        const isAdmin = true;
         const identificationInt = parseInt(this.identification, 10);
         const response = await axios.post('http://localhost:5000/api/user', {
           identification: identificationInt,
@@ -22,7 +23,7 @@ export default {
           username: this.username,
           password: this.password,
           address: this.address,
-          isAdmin: false
+          isAdmin: isAdmin
         });
         console.log('User registered:', response.data);
         this.$router.push('/login');
