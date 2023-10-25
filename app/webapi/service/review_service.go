@@ -35,6 +35,7 @@ func (rs *ReviewService) CreateReview(token string, review *model.Review) error 
 	}
 
 	review.UserID = user.Identification
+	review.UserEmail = user.Email
 
 	return rs.repositoryPool.ReviewRepository.CreateReview(review)
 }
