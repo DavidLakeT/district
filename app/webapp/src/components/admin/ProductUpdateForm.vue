@@ -36,8 +36,3 @@
     },
   };
   </script>
-  
-  <style scoped>
-  @import '@/css/productStyle.css';
-  </style>
-  

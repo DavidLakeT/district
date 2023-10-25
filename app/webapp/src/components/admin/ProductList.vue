@@ -34,6 +34,6 @@
   </script>
 
 <style scoped>
-  @import '@/css/productList.css'
+    @import '@/css/productList.css';
 </style>
   

@@ -1,6 +1,6 @@
 <template>
     <button @click="logout" class="nav-link">Logout</button>
-  </template>
+</template>
   
   <script>
   export default {
