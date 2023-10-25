@@ -4,19 +4,19 @@
     <div v-if="reviews.length === 0" class="no-reviews">No reviews yet.</div>
     <ul v-else class="list-group">
       <li v-for="(review, index) in reviews" :key="index" class="list-group-item">
-        <div class="review-author">{{ review.user_email }}</div>
+        <div class="review-author">{{ review.id }}</div>
         <div class="review-rating">
           <span v-for="star in review.rating" :key="star" class="star">&#9733;</span>
         </div>
         <div class="review-text">{{ review.content }}</div>
-        <div class="review-date">{{ review.date }}</div>
+        <div class="review-date">{{ review.created_at }}</div>
+        <button v-if="canDeleteReview(review.user_id)" @click="deleteRev(review.id)" class="btn btn-danger">Delete</button>
       </li>
     </ul>
 
     <!-- Form to add a new review -->
     <form @submit.prevent="submitReview" v-if="showReviewForm" class="mt-3">
       <div class="form-group">
-        <!--<label for="author">Your Name:</label>-->
         <input hidden type="text" v-model="newReview.author" class="form-control" id="author">
       </div>
       <div class="form-group">
@@ -35,12 +35,12 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit Review</button>
     </form>
-    <button @click="toggleReviewForm" v-else class="btn btn-primary mt-3">Add a Review</button>
+    <button @click="toggleReviewForm" v-if="!this.$store.getters['auth/isAdmin']" class="btn btn-primary mt-3">Add a Review</button>
   </div>
 </template>
 
 <script>
-import { submitReviewForm } from '@/js/review.js'
+import { submitReviewForm, deleteReview } from '@/js/review.js'
 export default {
   props: {
     product: Object,
@@ -53,7 +53,7 @@ export default {
     return {
       showReviewForm: false,
       newReview: {
-        user_id: "",
+        user_id: this.$store.getters['auth/userId'],
         rating: 1,
         content: "",
         product_id: parseInt(this.$route.params.id, 10),
@@ -74,6 +74,20 @@ export default {
       } catch (error) {
         console.error('Error submitting review:', error);
       }
+    },
+    canDeleteReview(user_id) {
+      const isAdmin = this.$store.getters['auth/isAdmin'];
+      const userId = parseInt(this.$store.getters['auth/userId'], 10);
+      const reviewCreatorId = user_id;
+      console.log(user_id);
+      return isAdmin || userId === reviewCreatorId;
+    },
+    async deleteRev(review_id){
+      const response = await deleteReview(review_id);
+        if(response){
+          window.location.reload();
+          this.toggleReviewForm();
+        }
     }
   },
 };

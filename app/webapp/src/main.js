@@ -11,12 +11,11 @@ const app = createApp(App);
 app.use(store);
 app.use(router);
 const authToken = readAuthToken();
-
 if (authToken) {
     const user = decodeAuthToken(authToken);
     store.commit('auth/setAuthToken', authToken);
     store.commit('auth/setUserId', user.userId);
-    store.commit('auth/setUserRole', !user.isAdmin);
+    store.commit('auth/setUserRole', user.isAdmin);
 }
 
 app.mount('#app');

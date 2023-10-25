@@ -31,3 +31,15 @@ export const fetchProductDetails = async (productId) => {
     throw error;
   }
 };
+
+export const updateProduct = async (productData) => {
+  try {
+    const response = await axios.put(`${BASE_URL}/api/product`, productData,{
+      withCredentials:true
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating product:', error);
+    return [];
+  }
+};
