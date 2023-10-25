@@ -35,7 +35,11 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit Review</button>
     </form>
-    <button @click="toggleReviewForm" v-if="!this.$store.getters['auth/isAdmin']" class="btn btn-primary mt-3">Add a Review</button>
+    <button @click="toggleReviewForm"
+      v-if="!this.$store.getters['auth/isAdmin'] && !showReviewForm && !hasUserReviewedProduct()"
+      class="btn btn-primary mt-3">
+      Add a Review
+    </button>
   </div>
 </template>
 
@@ -74,6 +78,10 @@ export default {
       } catch (error) {
         console.error('Error submitting review:', error);
       }
+    },
+    hasUserReviewedProduct() {
+      const userId = parseInt(this.$store.getters['auth/userId'], 10);
+      return this.reviews.some((review) => review.user_id == userId);
     },
     canDeleteReview(user_id) {
       const isAdmin = this.$store.getters['auth/isAdmin'];
