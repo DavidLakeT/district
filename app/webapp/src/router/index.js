@@ -48,18 +48,18 @@ const routes = [
   { 
     path: '/admin/products', 
     component: ProductsAdmin,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true  },
   },
   {
     path: '/admin/products/create',
     component: ProductCreateForm,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true  },
   },
   {
     path: '/admin/products/:id',
     component: ProductUpdate,
     props: true,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, requiresAdmin: true  }
   },
 ];
 
@@ -72,6 +72,12 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!store.getters['auth/isAuthenticated']) {
       next('/login');
+    } else if (to.matched.some((record) => record.meta.requiresAdmin)) {
+      if (store.getters['auth/isAdmin']) {
+        next();
+      } else {
+        next('/login');
+      }
     } else {
       next();
     }
@@ -79,7 +85,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
-
 
 export default router;
