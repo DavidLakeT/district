@@ -89,5 +89,5 @@ func (rc *ReviewController) DeleteReviewById(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Review succesfully deleted."})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "review succesfully deleted."})
 }

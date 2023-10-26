@@ -67,10 +67,13 @@ func main() {
 	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)
 	app.GET("api/product/name/:name", controllerPool.ProductController.SearchProductsByName)
 	app.POST("api/product", controllerPool.ProductController.CreateProduct)
+	app.PUT("api/product/id/:id", controllerPool.ProductController.UpdateProduct)
+	app.DELETE("api/product/id/:id", controllerPool.ProductController.DeleteProduct)
 
 	// Review-related endpoints
 	app.GET("api/review/:id", controllerPool.ReviewController.GetReviewById)
 	app.POST("api/review", controllerPool.ReviewController.CreateReview)
+	app.DELETE("api/review/:id", controllerPool.ReviewController.DeleteReviewById)
 
 	// User-related endpoints
 	app.GET("api/user/:id", controllerPool.UserController.GetUserById)

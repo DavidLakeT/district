@@ -1,6 +1,7 @@
 package service
 
 import (
+	controller "district/controller/request"
 	"district/model"
 	dto "district/model/dto"
 	repository "district/repository/handler"
@@ -74,4 +75,40 @@ func (ps *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, err
 	}
 
 	return productDTOs, nil
+}
+
+func (ps *ProductService) UpdateProduct(id int, request *controller.UpdateProductRequest) error {
+	product, err := ps.repositoryPool.ProductRepository.GetProductByID(id)
+	if err != nil {
+		return err
+	}
+
+	if request.Name != nil {
+		product.Name = *request.Name
+	}
+	if request.Description != nil {
+		product.Description = *request.Description
+	}
+	if request.Stock != nil {
+		product.Stock = *request.Stock
+	}
+	if request.Price != nil {
+		product.Price = *request.Price
+	}
+
+	return ps.repositoryPool.ProductRepository.UpdateProduct(product)
+}
+
+func (ps *ProductService) DeleteProduct(id int) error {
+	err := ps.repositoryPool.ProductRepository.DeleteProduct(id)
+	if err != nil {
+		return err
+	}
+
+	err = ps.repositoryPool.ReviewRepository.DeleteReviewsByProductID(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

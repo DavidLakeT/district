@@ -97,8 +97,8 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 }
 
 func (r *ProductRepository) UpdateProduct(product *model.Product) error {
-	query := "UPDATE products SET name = $1, price = $2 WHERE id = $3 AND deleted_at IS NULL"
-	result, err := r.db.Exec(query, product.Name, product.Price, product.ID)
+	query := "UPDATE products SET name = $1, description = $2, stock = $3, price = $4 WHERE id = $5 AND deleted_at IS NULL"
+	result, err := r.db.Exec(query, product.Name, product.Description, product.Stock, product.Price, product.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update product: %w", err)
 	}

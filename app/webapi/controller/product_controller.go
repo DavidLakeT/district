@@ -97,3 +97,50 @@ func (pc *ProductController) SearchProductsByName(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, products)
 }
+
+// Endpoint: PUT /api/product/:id
+// - Updates the product with the specified ID.
+func (pc *ProductController) UpdateProduct(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid product ID",
+		})
+	}
+
+	var request request.UpdateProductRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid request payload",
+		})
+	}
+
+	err = pc.servicePool.ProductService.UpdateProduct(id, &request)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Product successfully updated."})
+}
+
+// Endpoint: DELETE /api/product/:id
+// - Deletes the product with the specified ID (and its reviews).
+func (pc *ProductController) DeleteProduct(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid product ID",
+		})
+	}
+
+	err = pc.servicePool.ProductService.DeleteProduct(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "product succesfully deleted."})
+}
