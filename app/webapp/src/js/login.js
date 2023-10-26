@@ -1,4 +1,6 @@
 import axios from 'axios';
+import store from '@/store';
+import { decodeAuthToken } from '@/js/auth.js'
 
 export default {
   name: "LoginFetcher",
@@ -25,8 +27,20 @@ export default {
         });
 
         if (response.status === 302 || response.data.auth_token) {
-          document.cookie = `auth_token=${response.data.auth_token}; path=/`;
-          this.$router.push('/products');
+          this.$root.authToken = response.data.auth_token;
+          document.cookie = `auth_token=${response.data.auth_token}; path=/;`;
+          
+          const user = decodeAuthToken(response.data.auth_token);
+          if (user) {
+            store.commit('auth/setAuthToken', response.data.auth_token);
+            store.commit('auth/setUserId', user.userId);
+            store.commit('auth/setUserRole', user.isAdmin);
+            if (user.isAdmin){
+              this.$router.push('/admin/products');
+            } else {
+              this.$router.push('/products');
+            }
+          }
         } else {
           this.loginError = 'Incorrect credentials. Please try again.';
         }
@@ -39,6 +53,6 @@ export default {
           this.loginError = 'An error occurred. Please try again.';
         }
       }
-    }
+    },
   }
 };
