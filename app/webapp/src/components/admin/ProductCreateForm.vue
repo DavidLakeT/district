@@ -57,9 +57,3 @@
   };
   </script>
   
-<style scoped>
-body {
-  margin-left: 0; 
-  padding-left: 550px; 
-}
-</style>
