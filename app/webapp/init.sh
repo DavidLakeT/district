@@ -7,3 +7,5 @@ cd your-project-name
 vue add router
 npm install bootstrap
 npm install axios
+npm install vuex --save
+

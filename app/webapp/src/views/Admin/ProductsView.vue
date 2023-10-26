@@ -9,7 +9,7 @@
   </template>
   
   <script>
-  import ProductList from '@/components/product/ProductList.vue';
+  import ProductList from '@/components/admin/ProductList.vue';
   import { fetchProducts } from '@/js/products.js'; 
   
   export default {
@@ -27,4 +27,3 @@
     },
   };
   </script>
-  
