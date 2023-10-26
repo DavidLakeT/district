@@ -34,27 +34,26 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 		return err
 	}
 
-	switch {
-	case request.Email != nil:
+	if request.Email != nil {
 		user.Email = *request.Email
-		fallthrough
-	case request.Username != nil:
+	}
+	if request.Username != nil {
 		user.Username = *request.Username
-		fallthrough
-	case request.Password != nil:
+	}
+	if request.Password != nil {
 		hashedPassword, err := HashPassword(*request.Password)
 		if err != nil {
 			return err
 		}
 		user.Password = hashedPassword
-		fallthrough
-	case request.Address != nil:
+	}
+	if request.Address != nil {
 		user.Address = *request.Address
-		fallthrough
-	case request.Balance != nil:
+	}
+	if request.Balance != nil {
 		user.Balance = *request.Balance
-		fallthrough
-	case request.IsAdmin != nil:
+	}
+	if request.IsAdmin != nil {
 		user.IsAdmin = *request.IsAdmin
 	}
 

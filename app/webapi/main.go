@@ -52,7 +52,7 @@ func main() {
 	app := echo.New()
 
 	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "Authorization", "Cache-Control"},
 		ExposeHeaders:    []string{"Content-Length"},
