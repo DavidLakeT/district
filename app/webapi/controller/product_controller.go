@@ -47,6 +47,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	product := models.Product{
 		Name:        request.Name,
 		Description: request.Description,
+		Stock:       request.Stock,
 		Price:       request.Price,
 	}
 
@@ -59,6 +60,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"name":        product.Name,
 		"description": product.Description,
+		"stock":       product.Stock,
 		"price":       product.Price,
 	})
 }

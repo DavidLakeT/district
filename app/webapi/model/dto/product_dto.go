@@ -8,6 +8,7 @@ type ProductDTO struct {
 	ID          int          `json:"id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
+	Stock       int          `json:"stock"`
 	Price       float64      `json:"price"`
 	Reviews     []*ReviewDTO `json:"reviews"`
 }
@@ -22,6 +23,7 @@ func ConvertToProductDTO(product *model.Product) *ProductDTO {
 		ID:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
+		Stock:       product.Stock,
 		Price:       product.Price,
 		Reviews:     reviewDtos,
 	}
