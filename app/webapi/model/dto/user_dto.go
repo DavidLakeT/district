@@ -8,7 +8,7 @@ type UserDTO struct {
 	Username       string  `json:"username"`
 	Address        string  `json:"address"`
 	Balance        float64 `json:"balance"`
-	IsAdmin        bool    `json:"isAdmin,omitempty"`
+	IsAdmin        bool    `json:"is_admin,omitempty"`
 }
 
 func ConvertToUserDTO(user *model.User) *UserDTO {
