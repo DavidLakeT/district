@@ -6,7 +6,7 @@ type CreateUserRequest struct {
 	Username       string `json:"username"`
 	Password       string `json:"password"`
 	Address        string `json:"address"`
-	IsAdmin        *bool  `json:"isAdmin"`
+	IsAdmin        *bool  `json:"is_admin"`
 }
 
 type UpdateUserRequest struct {
@@ -15,5 +15,5 @@ type UpdateUserRequest struct {
 	Password *string  `json:"password"`
 	Address  *string  `json:"address"`
 	Balance  *float64 `json:"balance"`
-	IsAdmin  *bool    `json:"isAdmin"`
+	IsAdmin  *bool    `json:"is_admin"`
 }
