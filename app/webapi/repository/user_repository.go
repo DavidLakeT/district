@@ -25,7 +25,7 @@ func (r *UserRepository) CreateUser(user *model.User) error {
 }
 
 func (r *UserRepository) GetUserByEmail(email string) (*model.User, error) {
-	query := "SELECT identification, email, username, password, address, balance, deleted_at FROM users WHERE email = $1"
+	query := "SELECT identification, email, username, password, address, balance, deleted_at, is_admin FROM users WHERE email = $1"
 	user := &model.User{}
 	err := r.db.QueryRow(query, email).Scan(
 		&user.Identification,
@@ -35,6 +35,7 @@ func (r *UserRepository) GetUserByEmail(email string) (*model.User, error) {
 		&user.Address,
 		&user.Balance,
 		&user.DeletedAt,
+		&user.IsAdmin,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
