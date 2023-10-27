@@ -23,7 +23,7 @@
             </button>
           </li>
           <li class="nav-item">
-            <button class="nav-link admin-button">
+            <button class="nav-link admin-button" @click="navigateTo('/admin/users/')">
               User Management
             </button>
           </li>

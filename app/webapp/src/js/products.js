@@ -32,12 +32,10 @@ export const fetchProductDetails = async (productId) => {
   }
 };
 
-export const updateProduct = async (productData) => {
+export const updateProduct = async (productData, productId) => {
   try {
     delete productData.reviews;
-    const product_id = productData.id;
-    delete productData.id;
-    const response = await axios.put(`${BASE_URL}/api/product/id/${product_id}`,
+    const response = await axios.put(`${BASE_URL}/api/product/id/${productId}`,
       productData, {
       withCredentials:true
     });

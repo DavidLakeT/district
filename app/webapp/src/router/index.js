@@ -9,6 +9,7 @@ import UserProfile from '@/views/UserProfileView.vue';
 import ProductsAdmin from '@/views/Admin/ProductsView.vue';
 import ProductCreateForm from  '@/views/Admin/ProductCreateView.vue'
 import ProductUpdate from  '@/views/Admin/ProductUpdateView.vue'
+import UserManagement from  '@/views/Admin/AdminUserManagementView.vue'
 import store from '@/store';
 
 
@@ -58,6 +59,12 @@ const routes = [
   {
     path: '/admin/products/:id',
     component: ProductUpdate,
+    props: true,
+    meta: { requiresAuth: true, requiresAdmin: true  }
+  },
+  {
+    path: '/admin/users/',
+    component: UserManagement,
     props: true,
     meta: { requiresAuth: true, requiresAdmin: true  }
   },
