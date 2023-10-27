@@ -7,6 +7,7 @@ type ServicePool struct {
 	ProductService *service.ProductService
 	ReviewService  *service.ReviewService
 	UserService    *service.UserService
+	UtilsService   *service.UtilsService
 }
 
 func NewServicePool(
@@ -14,11 +15,13 @@ func NewServicePool(
 	productService *service.ProductService,
 	reviewService *service.ReviewService,
 	userService *service.UserService,
+	utilsService *service.UtilsService,
 ) *ServicePool {
 	return &ServicePool{
 		AuthService:    authService,
 		ProductService: productService,
 		ReviewService:  reviewService,
 		UserService:    userService,
+		UtilsService:   utilsService,
 	}
 }

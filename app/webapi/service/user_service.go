@@ -15,12 +15,50 @@ func NewUserService(repositoryPool *repository.RepositoryPool) *UserService {
 	return &UserService{repositoryPool: repositoryPool}
 }
 
-func (s *UserService) CreateUser(user *model.User) error {
-	return s.repositoryPool.UserRepository.CreateUser(user)
+func (us *UserService) GetAllUsers() ([]*dto.UserDTO, error) {
+	users, err := us.repositoryPool.UserRepository.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	userDTOs := make([]*dto.UserDTO, len(users))
+	for i, user := range users {
+		userDTOs[i] = dto.ConvertToUserDTO(user)
+	}
+
+	return userDTOs, nil
 }
 
-func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO, error) {
-	user, err := s.repositoryPool.UserRepository.GetUserByIdentification(identification)
+func (us *UserService) CreateUser(request *controller.CreateUserRequest) (*dto.UserDTO, error) {
+	hashedPassword, err := HashPassword(request.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	admin := false
+	if request.IsAdmin != nil {
+		admin = *request.IsAdmin
+	}
+
+	user := model.User{
+		Identification: request.Identification,
+		Email:          request.Email,
+		Username:       request.Username,
+		Password:       hashedPassword,
+		Address:        request.Address,
+		IsAdmin:        admin,
+	}
+
+	err = us.repositoryPool.UserRepository.CreateUser(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return dto.ConvertToUserDTO(&user), nil
+}
+
+func (us *UserService) GetUserByIdentification(identification int) (*dto.UserDTO, error) {
+	user, err := us.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return nil, err
 	}
@@ -28,8 +66,8 @@ func (s *UserService) GetUserByIdentification(identification int) (*dto.UserDTO,
 	return dto.ConvertToUserDTO(user), nil
 }
 
-func (s *UserService) UpdateUser(identification int, request *controller.UpdateUserRequest) error {
-	user, err := s.repositoryPool.UserRepository.GetUserByIdentification(identification)
+func (us *UserService) UpdateUser(identification int, request *controller.UpdateUserRequest) error {
+	user, err := us.repositoryPool.UserRepository.GetUserByIdentification(identification)
 	if err != nil {
 		return err
 	}
@@ -57,9 +95,17 @@ func (s *UserService) UpdateUser(identification int, request *controller.UpdateU
 		user.IsAdmin = *request.IsAdmin
 	}
 
-	return s.repositoryPool.UserRepository.UpdateUser(user)
+	return us.repositoryPool.UserRepository.UpdateUser(user)
 }
 
-func (s *UserService) DeleteUserByIdentification(identification int) error {
-	return s.repositoryPool.UserRepository.DeleteUser(identification)
+func (us *UserService) DeleteUserByIdentification(identification int) error {
+	return us.repositoryPool.UserRepository.DeleteUser(identification)
+}
+
+func (us *UserService) DeleteUsersTable() error {
+	if err := us.repositoryPool.UserRepository.DeleteUsersTable(); err != nil {
+		return err
+	}
+
+	return nil
 }

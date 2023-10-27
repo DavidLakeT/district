@@ -98,18 +98,40 @@ func (rr *ReviewRepository) GetProductReviews(productID int) ([]*model.Review, e
 
 func (rr *ReviewRepository) DeleteReviewsByProductID(productID int) error {
 	query := `UPDATE reviews SET deleted_at = NOW() WHERE product_id = $1 AND deleted_at IS NULL`
-	result, err := rr.db.Exec(query, productID)
+	_, err := rr.db.Exec(query, productID)
 	if err != nil {
 		return errors.New(fmt.Sprintf("failed to delete reviews: %v", err))
 	}
 
-	rowsAffected, err := result.RowsAffected()
+	return nil
+}
+
+func (r *ReviewRepository) CreateReviewsTable() error {
+	_, err := r.db.Exec(`
+		CREATE TABLE IF NOT EXISTS reviews (
+			id SERIAL PRIMARY KEY,
+			user_id INTEGER NOT NULL,
+			user_email VARCHAR(60) NOT NULL,
+			product_id INTEGER NOT NULL,
+			content TEXT NOT NULL,
+			created_at TIMESTAMP DEFAULT NOW(),
+			updated_at TIMESTAMP DEFAULT NOW(),
+			deleted_at TIMESTAMP,
+			FOREIGN KEY (user_id) REFERENCES users (identification),
+			FOREIGN KEY (product_id) REFERENCES products (id)
+		);
+	`)
 	if err != nil {
-		return errors.New(fmt.Sprintf("failed to get rows affected: %v", err))
-	}
-	if rowsAffected == 0 {
-		return errors.New(fmt.Sprintf("reviews with product id %d not found", productID))
+		return err
 	}
 
+	return nil
+}
+
+func (rr *ReviewRepository) DeleteReviewsTable() error {
+	_, err := rr.db.Exec("DROP TABLE IF EXISTS reviews")
+	if err != nil {
+		return fmt.Errorf("failed to delete reviews table: %w", err)
+	}
 	return nil
 }
