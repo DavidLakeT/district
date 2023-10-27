@@ -1,14 +1,10 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	request "district/controller/request"
-	"district/model"
-	dto "district/model/dto"
-	services "district/service"
 	service "district/service/handler"
 
 	"github.com/labstack/echo/v4"
@@ -22,6 +18,19 @@ func NewUserController(servicePool *service.ServicePool) *UserController {
 	return &UserController{servicePool: servicePool}
 }
 
+// Endpoint: GET /api/user
+// - Retrieves information about all users (identification, email, balance, isAdmin).
+func (uc *UserController) GetAllUsers(c echo.Context) error {
+	users, err := uc.servicePool.UserService.GetAllUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, users)
+}
+
 // Endpoint: POST /api/user
 // - Creates a new user with the specified information.
 func (uc *UserController) CreateUser(c echo.Context) error {
@@ -31,31 +40,12 @@ func (uc *UserController) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}
 
-	hashedPassword, err := services.HashPassword(request.Password)
+	user, err := uc.servicePool.UserService.CreateUser(&request)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
-	admin := false
-	if request.IsAdmin != nil {
-		admin = *request.IsAdmin
-	}
-
-	user := model.User{
-		Identification: request.Identification,
-		Email:          request.Email,
-		Username:       request.Username,
-		Password:       hashedPassword,
-		Address:        request.Address,
-		IsAdmin:        admin,
-	}
-
-	if err := uc.servicePool.UserService.CreateUser(&user); err != nil {
-		fmt.Println("error:", err.Error())
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
-	}
-
-	return c.JSON(http.StatusCreated, map[string]interface{}{"user": dto.ConvertToUserDTO(&user)})
+	return c.JSON(http.StatusCreated, map[string]interface{}{"user": user})
 }
 
 // Endpoint: GET /api/user/:id

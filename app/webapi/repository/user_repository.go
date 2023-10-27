@@ -24,6 +24,42 @@ func (r *UserRepository) CreateUser(user *model.User) error {
 	return nil
 }
 
+func (r *UserRepository) GetAllUsers() ([]*model.User, error) {
+	rows, err := r.db.Query("SELECT * FROM users WHERE deleted_at IS NULL")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get users: %w", err)
+	}
+	defer rows.Close()
+
+	users := make([]*model.User, 0)
+	for rows.Next() {
+		user := &model.User{}
+		err := rows.Scan(
+			&user.Identification,
+			&user.Email,
+			&user.Username,
+			&user.Password,
+			&user.Address,
+			&user.Balance,
+			&user.IsAdmin,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.DeletedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get users: %w", err)
+		}
+
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("failed to get users: %w", err)
+	}
+
+	return users, nil
+}
+
 func (r *UserRepository) GetUserByEmail(email string) (*model.User, error) {
 	query := "SELECT identification, email, username, password, address, balance, deleted_at, is_admin FROM users WHERE email = $1"
 	user := &model.User{}
@@ -101,5 +137,35 @@ func (r *UserRepository) DeleteUser(identification int) error {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
 
+	return nil
+}
+
+func (r *UserRepository) CreateUsersTable() error {
+	_, err := r.db.Exec(`
+		CREATE TABLE IF NOT EXISTS users (
+			identification INTEGER PRIMARY KEY,
+			email VARCHAR(60) NOT NULL UNIQUE,
+			username VARCHAR(60) NOT NULL UNIQUE,
+			password VARCHAR(60) NOT NULL,
+			address VARCHAR(60) NOT NULL, 
+			balance FLOAT(8) DEFAULT 0.00,
+			is_admin BOOLEAN DEFAULT FALSE,
+			created_at TIMESTAMP DEFAULT NOW(),
+			updated_at TIMESTAMP DEFAULT NOW(),
+			deleted_at TIMESTAMP
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *UserRepository) DeleteUsersTable() error {
+	_, err := r.db.Exec("DROP TABLE IF EXISTS users CASCADE")
+	if err != nil {
+		return fmt.Errorf("failed to delete users table: %w", err)
+	}
 	return nil
 }

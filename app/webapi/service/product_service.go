@@ -112,3 +112,11 @@ func (ps *ProductService) DeleteProduct(id int) error {
 
 	return nil
 }
+
+func (ps *ProductService) DeleteProductsTable() error {
+	if err := ps.repositoryPool.ProductRepository.DeleteProductsTable(); err != nil {
+		return err
+	}
+
+	return nil
+}

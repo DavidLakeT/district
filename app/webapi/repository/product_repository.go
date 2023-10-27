@@ -116,10 +116,47 @@ func (r *ProductRepository) UpdateProduct(product *model.Product) error {
 }
 
 func (r *ProductRepository) DeleteProduct(id int) error {
-	_, err := r.db.Exec("UPDATE products SET deleted_at = NOW() WHERE id = $1", id)
+	result, err := r.db.Exec("UPDATE products SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", id)
 	if err != nil {
 		return fmt.Errorf("failed to delete product: %w", err)
 	}
 
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("product not found or has already been deleted")
+	}
+
+	return nil
+}
+
+func (r *ProductRepository) CreateProductsTable() error {
+	_, err := r.db.Exec(`
+		CREATE TABLE IF NOT EXISTS products (
+			id SERIAL PRIMARY KEY,
+			name VARCHAR(60) NOT NULL,
+			description TEXT NOT NULL,
+			stock INTEGER NOT NULL,
+			price FLOAT(8) NOT NULL,
+			created_at TIMESTAMP DEFAULT NOW(),
+			updated_at TIMESTAMP DEFAULT NOW(),
+			deleted_at TIMESTAMP
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *ProductRepository) DeleteProductsTable() error {
+	_, err := r.db.Exec("DROP TABLE IF EXISTS products CASCADE")
+	if err != nil {
+		return fmt.Errorf("failed to delete products table: %w", err)
+	}
 	return nil
 }

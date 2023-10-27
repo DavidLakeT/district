@@ -68,3 +68,11 @@ func (rs *ReviewService) DeleteReview(id int) error {
 
 	return rs.repositoryPool.ReviewRepository.DeleteReview(id)
 }
+
+func (rs *ReviewService) DeleteReviewsTable() error {
+	if err := rs.repositoryPool.ReviewRepository.DeleteReviewsTable(); err != nil {
+		return err
+	}
+
+	return nil
+}
