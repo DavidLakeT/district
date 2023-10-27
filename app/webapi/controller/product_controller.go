@@ -124,7 +124,7 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Product successfully updated."})
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "product successfully updated."})
 }
 
 // Endpoint: DELETE /api/product/:id

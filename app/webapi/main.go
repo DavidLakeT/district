@@ -27,11 +27,6 @@ func main() {
 		log.Fatal(dbError)
 	}
 
-	dbError = database.SetupDatabase(db)
-	if dbError != nil {
-		log.Fatal(dbError)
-	}
-
 	productRepository := repository.NewProductRepository(db)
 	reviewRepository := repository.NewReviewRepository(db)
 	userRepository := repository.NewUserRepository(db)
@@ -41,15 +36,20 @@ func main() {
 	productService := service.NewProductService(repositoryPool)
 	reviewService := service.NewReviewService(repositoryPool)
 	userService := service.NewUserService(repositoryPool)
-	servicePool := servicePool.NewServicePool(authService, productService, reviewService, userService)
+	utilsService := service.NewUtilsService(repositoryPool)
+	servicePool := servicePool.NewServicePool(authService, productService, reviewService, userService, utilsService)
 
 	authController := controller.NewAuthController(servicePool)
 	productController := controller.NewProductController(servicePool)
 	reviewController := controller.NewReviewController(servicePool)
 	userController := controller.NewUserController(servicePool)
-	controllerPool := controllerPool.NewControllerPool(authController, productController, reviewController, userController)
+	utilsController := controller.NewUtilsController(servicePool)
+	controllerPool := controllerPool.NewControllerPool(authController, productController, reviewController, userController, utilsController)
 
 	app := echo.New()
+	if err := utilsService.ClearDatabase(); err != nil {
+		log.Fatal(err)
+	}
 
 	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081"},
@@ -80,6 +80,9 @@ func main() {
 	app.POST("api/user", controllerPool.UserController.CreateUser)
 	app.PUT("api/user/:id", controllerPool.UserController.UpdateUser)
 	app.DELETE("api/user/:id", controllerPool.UserController.DeleteUser)
+
+	// Database-related endpoints
+	app.DELETE("api/database", controllerPool.UtilsController.ClearDatabase)
 
 	app.Logger.Fatal(app.Start(":5000"))
 }

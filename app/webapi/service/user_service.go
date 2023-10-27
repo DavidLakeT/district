@@ -87,3 +87,11 @@ func (us *UserService) UpdateUser(identification int, request *controller.Update
 func (us *UserService) DeleteUserByIdentification(identification int) error {
 	return us.repositoryPool.UserRepository.DeleteUser(identification)
 }
+
+func (us *UserService) DeleteUsersTable() error {
+	if err := us.repositoryPool.UserRepository.DeleteUsersTable(); err != nil {
+		return err
+	}
+
+	return nil
+}

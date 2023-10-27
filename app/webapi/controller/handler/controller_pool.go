@@ -7,6 +7,7 @@ type ControllerPool struct {
 	ProductController *controller.ProductController
 	ReviewController  *controller.ReviewController
 	UserController    *controller.UserController
+	UtilsController   *controller.UtilsController
 }
 
 func NewControllerPool(
@@ -14,11 +15,13 @@ func NewControllerPool(
 	productController *controller.ProductController,
 	reviewController *controller.ReviewController,
 	userController *controller.UserController,
+	utilsController *controller.UtilsController,
 ) *ControllerPool {
 	return &ControllerPool{
 		AuthController:    authController,
 		ProductController: productController,
 		ReviewController:  reviewController,
 		UserController:    userController,
+		UtilsController:   utilsController,
 	}
 }
