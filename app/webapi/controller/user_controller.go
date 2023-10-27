@@ -18,6 +18,19 @@ func NewUserController(servicePool *service.ServicePool) *UserController {
 	return &UserController{servicePool: servicePool}
 }
 
+// Endpoint: GET /api/user
+// - Retrieves information about all users (identification, email, balance, isAdmin).
+func (uc *UserController) GetAllUsers(c echo.Context) error {
+	users, err := uc.servicePool.UserService.GetAllUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, users)
+}
+
 // Endpoint: POST /api/user
 // - Creates a new user with the specified information.
 func (uc *UserController) CreateUser(c echo.Context) error {

@@ -15,6 +15,20 @@ func NewUserService(repositoryPool *repository.RepositoryPool) *UserService {
 	return &UserService{repositoryPool: repositoryPool}
 }
 
+func (us *UserService) GetAllUsers() ([]*dto.UserDTO, error) {
+	users, err := us.repositoryPool.UserRepository.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	userDTOs := make([]*dto.UserDTO, len(users))
+	for i, user := range users {
+		userDTOs[i] = dto.ConvertToUserDTO(user)
+	}
+
+	return userDTOs, nil
+}
+
 func (us *UserService) CreateUser(request *controller.CreateUserRequest) (*dto.UserDTO, error) {
 	hashedPassword, err := HashPassword(request.Password)
 	if err != nil {

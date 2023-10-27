@@ -76,6 +76,7 @@ func main() {
 	app.DELETE("api/review/:id", controllerPool.ReviewController.DeleteReviewById)
 
 	// User-related endpoints
+	app.GET("api/user", controllerPool.UserController.GetAllUsers)
 	app.GET("api/user/:id", controllerPool.UserController.GetUserById)
 	app.POST("api/user", controllerPool.UserController.CreateUser)
 	app.PUT("api/user/:id", controllerPool.UserController.UpdateUser)

@@ -19,7 +19,7 @@ func NewProductController(servicePool *service.ServicePool) *ProductController {
 	return &ProductController{servicePool: servicePool}
 }
 
-// Endpoint: GET /api/products
+// Endpoint: GET /api/product
 // - Retrieves information about all products (name, description, price, etc).
 func (pc *ProductController) GetAllProducts(c echo.Context) error {
 	products, err := pc.servicePool.ProductService.GetAllProducts()
