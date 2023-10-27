@@ -20,7 +20,7 @@
             <input type="number" v-model="user.balance" @change="updateUser(user)">
           </td>
           <td>
-            <button @click="deleteUser(user.id)">Delete</button>
+            <button @click="deleteUser(user.identification)" class="btn btn-danger btn-sm">Delete</button>
           </td>
         </tr>
       </tbody>

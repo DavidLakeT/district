@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div class="container mt-5">
       <h2>Admin User Management</h2>
       <admin-user-table :users="users" @updateUser="updateUser" @deleteUser="deleteUser" />
     </div>
@@ -27,7 +27,7 @@
         this.users = await getUsers(); // Implement the getUsers function to fetch user data
       },
       async updateUser(user) {
-        const response = await updateUser(user); // Implement the updateUser function
+        const response = await updateUser(user, user.identification); // Implement the updateUser function
         if (response) {
           // Handle success
         } else {

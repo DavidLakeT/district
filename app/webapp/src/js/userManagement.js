@@ -4,7 +4,7 @@ const BASE_URL = 'http://localhost:5000';
 
 export const getUsers = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/users`);
+    const response = await axios.get(`${BASE_URL}/api/user`);
     return response.data;
   } catch (error) {
     console.error('Error fetching products:', error);
