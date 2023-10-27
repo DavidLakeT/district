@@ -1,0 +1,21 @@
+/* searchProduct.css */
+
+.search-product {
+    margin-bottom: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+  }
+  
+  .input-group input {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .input-group button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  

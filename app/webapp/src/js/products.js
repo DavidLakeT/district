@@ -32,6 +32,16 @@ export const fetchProductDetails = async (productId) => {
   }
 };
 
+export const searchProduct = async (productName) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/product/name/${productName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    throw error;
+  }
+};
+
 export const updateProduct = async (productData, productId) => {
   try {
     delete productData.reviews;
