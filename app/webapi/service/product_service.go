@@ -95,7 +95,22 @@ func (ps *ProductService) GetProductsByName(name string) ([]*dto.ProductDTO, err
 	return productDTOs, nil
 }
 
-func (ps *ProductService) UpdateProduct(id int, request *controller.UpdateProductRequest) error {
+func (ps *ProductService) UpdateProduct(token string, id int, request *controller.UpdateProductRequest) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if !is_admin {
+		return fmt.Errorf("you have to be an administrator to create products.")
+	}
+
 	product, err := ps.repositoryPool.ProductRepository.GetProductByID(id)
 	if err != nil {
 		return err
@@ -117,8 +132,23 @@ func (ps *ProductService) UpdateProduct(id int, request *controller.UpdateProduc
 	return ps.repositoryPool.ProductRepository.UpdateProduct(product)
 }
 
-func (ps *ProductService) DeleteProduct(id int) error {
-	err := ps.repositoryPool.ProductRepository.DeleteProduct(id)
+func (ps *ProductService) DeleteProduct(token string, id int) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if !is_admin {
+		return fmt.Errorf("you have to be an administrator to delete products.")
+	}
+
+	err = ps.repositoryPool.ProductRepository.DeleteProduct(id)
 	if err != nil {
 		return err
 	}
