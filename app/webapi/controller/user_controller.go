@@ -21,7 +21,14 @@ func NewUserController(servicePool *service.ServicePool) *UserController {
 // Endpoint: GET /api/user
 // - Retrieves information about all users (identification, email, balance, isAdmin).
 func (uc *UserController) GetAllUsers(c echo.Context) error {
-	users, err := uc.servicePool.UserService.GetAllUsers()
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to check this information",
+		})
+	}
+
+	users, err := uc.servicePool.UserService.GetAllUsers(token.Value)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),

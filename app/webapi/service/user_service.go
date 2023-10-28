@@ -5,6 +5,10 @@ import (
 	"district/model"
 	dto "district/model/dto"
 	repository "district/repository/handler"
+	"encoding/base64"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 type UserService struct {
@@ -15,7 +19,22 @@ func NewUserService(repositoryPool *repository.RepositoryPool) *UserService {
 	return &UserService{repositoryPool: repositoryPool}
 }
 
-func (us *UserService) GetAllUsers() ([]*dto.UserDTO, error) {
+func (us *UserService) GetAllUsers(token string) ([]*dto.UserDTO, error) {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return nil, fmt.Errorf("your session token is not valid.")
+	}
+
+	if !is_admin {
+		return nil, fmt.Errorf("you have to be an administrator to get all users information.")
+	}
+
 	users, err := us.repositoryPool.UserRepository.GetAllUsers()
 	if err != nil {
 		return nil, err
