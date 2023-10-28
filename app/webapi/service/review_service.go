@@ -5,6 +5,7 @@ import (
 	dto "district/model/dto"
 	repository "district/repository/handler"
 	"encoding/base64"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -60,10 +61,29 @@ func (rs *ReviewService) UpdateReview(review *model.Review) error {
 	return rs.repositoryPool.ReviewRepository.UpdateReview(review)
 }
 
-func (rs *ReviewService) DeleteReview(id int) error {
-	_, err := rs.repositoryPool.ReviewRepository.GetReviewById(id)
+func (rs *ReviewService) DeleteReview(token string, id int) error {
+	review, err := rs.repositoryPool.ReviewRepository.GetReviewById(id)
 	if err != nil {
 		return err
+	}
+
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	identification, err := strconv.Atoi(tokenValues[0])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if identification != review.UserID && !is_admin {
+		return fmt.Errorf("you have no permissions to delete this review.")
 	}
 
 	return rs.repositoryPool.ReviewRepository.DeleteReview(id)

@@ -83,7 +83,14 @@ func (rc *ReviewController) DeleteReviewById(c echo.Context) error {
 		})
 	}
 
-	if err := rc.servicePool.ReviewService.DeleteReview(id); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to create a product",
+		})
+	}
+
+	if err := rc.servicePool.ReviewService.DeleteReview(token.Value, id); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})

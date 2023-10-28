@@ -48,11 +48,11 @@ func (ps *ProductService) CreateProduct(token string, product *model.Product) er
 	tokenValues := strings.Split(string(decodedToken), ":")
 	is_admin, err := strconv.ParseBool(tokenValues[3])
 	if err != nil {
-		return nil
+		return fmt.Errorf("your session token is not valid.")
 	}
 
 	if !is_admin {
-		return fmt.Errorf("you have to be an administrator to create products")
+		return fmt.Errorf("you have to be an administrator to create products.")
 	}
 
 	return ps.repositoryPool.ProductRepository.CreateProduct(product)
