@@ -155,7 +155,31 @@ func (us *UserService) UpdateUser(token string, identification int, request *con
 	return us.repositoryPool.UserRepository.UpdateUser(user)
 }
 
-func (us *UserService) DeleteUserByIdentification(identification int) error {
+func (us *UserService) DeleteUserByIdentification(token string, identification int) error {
+	user, err := us.repositoryPool.UserRepository.GetUserByIdentification(identification)
+	if err != nil {
+		return err
+	}
+
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	identification, err = strconv.Atoi(tokenValues[0])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if identification != user.Identification && !is_admin {
+		return fmt.Errorf("you have no permissions to delete this user.")
+	}
+
 	return us.repositoryPool.UserRepository.DeleteUser(identification)
 }
 

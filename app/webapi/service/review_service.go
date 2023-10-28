@@ -61,7 +61,7 @@ func (rs *ReviewService) UpdateReview(review *model.Review) error {
 	return rs.repositoryPool.ReviewRepository.UpdateReview(review)
 }
 
-func (rs *ReviewService) DeleteReview(token string, id int) error {
+func (rs *ReviewService) DeleteReviewById(token string, id int) error {
 	review, err := rs.repositoryPool.ReviewRepository.GetReviewById(id)
 	if err != nil {
 		return err

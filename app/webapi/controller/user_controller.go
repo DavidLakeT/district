@@ -113,7 +113,14 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	if err := uc.servicePool.UserService.DeleteUserByIdentification(identification); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update an user",
+		})
+	}
+
+	if err := uc.servicePool.UserService.DeleteUserByIdentification(token.Value, identification); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 

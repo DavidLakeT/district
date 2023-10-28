@@ -90,7 +90,7 @@ func (rc *ReviewController) DeleteReviewById(c echo.Context) error {
 		})
 	}
 
-	if err := rc.servicePool.ReviewService.DeleteReview(token.Value, id); err != nil {
+	if err := rc.servicePool.ReviewService.DeleteReviewById(token.Value, id); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
