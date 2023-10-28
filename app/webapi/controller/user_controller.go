@@ -30,7 +30,7 @@ func (uc *UserController) GetAllUsers(c echo.Context) error {
 
 	users, err := uc.servicePool.UserService.GetAllUsers(token.Value)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
@@ -63,7 +63,14 @@ func (uc *UserController) GetUserById(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	user, err := uc.servicePool.UserService.GetUserByIdentification(identification)
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to check this information",
+		})
+	}
+
+	user, err := uc.servicePool.UserService.GetUserByIdentification(token.Value, identification)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{"error": err.Error()})
 	}
