@@ -51,7 +51,14 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 		Price:       request.Price,
 	}
 
-	if err := pc.servicePool.ProductService.CreateProduct(&product); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to create a product",
+		})
+	}
+
+	if err := pc.servicePool.ProductService.CreateProduct(token.Value, &product); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})

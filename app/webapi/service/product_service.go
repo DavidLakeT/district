@@ -5,7 +5,10 @@ import (
 	"district/model"
 	dto "district/model/dto"
 	repository "district/repository/handler"
+	"encoding/base64"
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 type ProductService struct {
@@ -36,7 +39,22 @@ func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
 	return productDTOs, nil
 }
 
-func (ps *ProductService) CreateProduct(product *model.Product) error {
+func (ps *ProductService) CreateProduct(token string, product *model.Product) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return nil
+	}
+
+	if !is_admin {
+		return fmt.Errorf("you have to be an administrator to create products")
+	}
+
 	return ps.repositoryPool.ProductRepository.CreateProduct(product)
 }
 
