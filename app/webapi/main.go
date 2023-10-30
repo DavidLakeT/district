@@ -33,18 +33,34 @@ func main() {
 	repositoryPool := repositoryPool.NewRepositoryPool(productRepository, reviewRepository, userRepository)
 
 	authService := service.NewAuthService(repositoryPool)
+	cartService := service.NewCartService(repositoryPool)
 	productService := service.NewProductService(repositoryPool)
 	reviewService := service.NewReviewService(repositoryPool)
 	userService := service.NewUserService(repositoryPool)
 	utilsService := service.NewUtilsService(repositoryPool)
-	servicePool := servicePool.NewServicePool(authService, productService, reviewService, userService, utilsService)
+	servicePool := servicePool.NewServicePool(
+		authService,
+		cartService,
+		productService,
+		reviewService,
+		userService,
+		utilsService,
+	)
 
 	authController := controller.NewAuthController(servicePool)
+	cartController := controller.NewCartController(servicePool)
 	productController := controller.NewProductController(servicePool)
 	reviewController := controller.NewReviewController(servicePool)
 	userController := controller.NewUserController(servicePool)
 	utilsController := controller.NewUtilsController(servicePool)
-	controllerPool := controllerPool.NewControllerPool(authController, productController, reviewController, userController, utilsController)
+	controllerPool := controllerPool.NewControllerPool(
+		authController,
+		cartController,
+		productController,
+		reviewController,
+		userController,
+		utilsController,
+	)
 
 	app := echo.New()
 	if err := utilsService.ClearDatabase(); err != nil {
