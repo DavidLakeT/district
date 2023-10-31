@@ -78,6 +78,9 @@ func main() {
 	// Auth-related endpoints.
 	app.POST("api/auth/login", controllerPool.AuthController.LoginUser)
 
+	// Cart-related endpoints.
+	app.GET("api/cart", controllerPool.CartController.GetCartInformation)
+
 	// Product-related endpoints
 	app.GET("api/product", controllerPool.ProductController.GetAllProducts)
 	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)

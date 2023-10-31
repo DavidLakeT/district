@@ -15,14 +15,24 @@ func NewCartService(repositoryPool *repository.RepositoryPool) *CartService {
 	return &CartService{repositoryPool: repositoryPool}
 }
 
-func (cs *CartService) GetCartTotal(cartToken string) (*float64, error) {
-	var total float64
+func (cs *CartService) GetCartInformation(cartToken string) (*float64, *model.Cart, error) {
 	cart, err := cs.decodeCartCookie(cartToken)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	for _, item := range cart {
+	total, err := cs.getCartTotal(&cart)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return total, &cart, nil
+}
+
+func (cs *CartService) getCartTotal(cart *model.Cart) (*float64, error) {
+	var total float64
+
+	for _, item := range *cart {
 		total += item.Cost * float64(item.Quantity)
 	}
 
