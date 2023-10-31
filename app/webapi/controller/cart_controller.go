@@ -89,3 +89,49 @@ func (cc *CartController) AddItemToCart(c echo.Context) error {
 		"message": "item added to cart successfully.",
 	})
 }
+
+func (cc *CartController) RemoveItemFromCart(c echo.Context) error {
+	_, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to remove items from your cart.",
+		})
+	}
+
+	cartToken, err := c.Cookie("cart_token")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing or invalid cart token.",
+		})
+	}
+
+	var item request.RemoveCartItemRequest
+	if err := c.Bind(&item); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid request body.",
+		})
+	}
+
+	if item.ProductID == nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing required fields.",
+		})
+	}
+
+	newToken, err := cc.servicePool.CartService.RemoveItemFromCart(cartToken.Value, *item.ProductID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:  "cart_token",
+		Value: *newToken,
+		Path:  "/",
+	})
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "item removed from cart successfully.",
+	})
+}

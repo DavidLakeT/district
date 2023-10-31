@@ -6,6 +6,7 @@ import (
 	repository "district/repository/handler"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 )
 
 type CartService struct {
@@ -43,7 +44,7 @@ func (cs *CartService) AddItemToCart(cartToken string, request request.AddCartIt
 				cart[i].Price = *request.Price
 			}
 			cart[i].Quantity += *request.Quantity
-			if cart[i].Quantity == 0 {
+			if cart[i].Quantity <= 0 {
 				cart = append(cart[:i], cart[i+1:]...)
 			}
 			itemExists = true
@@ -59,6 +60,35 @@ func (cs *CartService) AddItemToCart(cartToken string, request request.AddCartIt
 		}
 
 		cart = append(cart, item)
+	}
+
+	encodedCart, err := json.Marshal(cart)
+	if err != nil {
+		return nil, err
+	}
+
+	encodedToken := base64.StdEncoding.EncodeToString(encodedCart)
+
+	return &encodedToken, nil
+}
+
+func (cs *CartService) RemoveItemFromCart(cartToken string, productId int) (*string, error) {
+	cart, err := cs.decodeCartCookie(cartToken)
+	if err != nil {
+		return nil, err
+	}
+
+	itemExists := false
+	for i, item := range cart {
+		if item.ProductID == productId {
+			cart = append(cart[:i], cart[i+1:]...)
+			itemExists = true
+			break
+		}
+	}
+
+	if !itemExists {
+		return nil, fmt.Errorf("product with ID %d not found in cart.", productId)
 	}
 
 	encodedCart, err := json.Marshal(cart)

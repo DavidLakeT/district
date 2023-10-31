@@ -81,6 +81,7 @@ func main() {
 	// Cart-related endpoints.
 	app.GET("api/cart", controllerPool.CartController.GetCartInformation)
 	app.POST("api/cart", controllerPool.CartController.AddItemToCart)
+	app.DELETE("api/cart", controllerPool.CartController.RemoveItemFromCart)
 
 	// Product-related endpoints
 	app.GET("api/product", controllerPool.ProductController.GetAllProducts)
