@@ -6,6 +6,11 @@ type AddCartItemRequest struct {
 	Price     *float64 `json:"price"`
 }
 
+type UpdateCartItemRequest struct {
+	ProductID *int `json:"product_id"`
+	Quantity  *int `json:"quantity"`
+}
+
 type RemoveCartItemRequest struct {
 	ProductID *int `json:"product_id"`
 }

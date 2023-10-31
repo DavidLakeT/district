@@ -72,6 +72,39 @@ func (cs *CartService) AddItemToCart(cartToken string, request request.AddCartIt
 	return &encodedToken, nil
 }
 
+func (cs *CartService) UpdateProductQuantity(cartToken string, request request.UpdateCartItemRequest) (*string, error) {
+	cart, err := cs.decodeCartCookie(cartToken)
+	if err != nil {
+		return nil, err
+	}
+
+	itemExists := false
+	for i, item := range cart {
+		if item.ProductID == *request.ProductID {
+			if *request.Quantity <= 0 {
+				cart = append(cart[:i], cart[i+1:]...)
+			} else {
+				cart[i].Quantity = *request.Quantity
+			}
+			itemExists = true
+			break
+		}
+	}
+
+	if !itemExists {
+		return nil, fmt.Errorf("product with ID %d not found in cart.", request.ProductID)
+	}
+
+	encodedCart, err := json.Marshal(cart)
+	if err != nil {
+		return nil, err
+	}
+
+	encodedToken := base64.StdEncoding.EncodeToString(encodedCart)
+
+	return &encodedToken, nil
+}
+
 func (cs *CartService) RemoveItemFromCart(cartToken string, productId int) (*string, error) {
 	cart, err := cs.decodeCartCookie(cartToken)
 	if err != nil {

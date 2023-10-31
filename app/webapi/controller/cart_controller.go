@@ -72,6 +72,12 @@ func (cc *CartController) AddItemToCart(c echo.Context) error {
 		})
 	}
 
+	if *item.Quantity <= 0 {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "product quantity should be greater than zero.",
+		})
+	}
+
 	newToken, err := cc.servicePool.CartService.AddItemToCart(cartToken.Value, item)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -87,6 +93,52 @@ func (cc *CartController) AddItemToCart(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "item added to cart successfully.",
+	})
+}
+
+func (cc *CartController) UpdateProductQuantity(c echo.Context) error {
+	_, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update the quantity of items in your cart.",
+		})
+	}
+
+	cartToken, err := c.Cookie("cart_token")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing or invalid cart token.",
+		})
+	}
+
+	var request request.UpdateCartItemRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "invalid request body.",
+		})
+	}
+
+	if request.ProductID == nil || request.Quantity == nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing required fields.",
+		})
+	}
+
+	newToken, err := cc.servicePool.CartService.UpdateProductQuantity(cartToken.Value, request)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	c.SetCookie(&http.Cookie{
+		Name:  "cart_token",
+		Value: *newToken,
+		Path:  "/",
+	})
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "item quantity updated successfully.",
 	})
 }
 
