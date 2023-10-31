@@ -80,6 +80,7 @@ func main() {
 
 	// Cart-related endpoints.
 	app.GET("api/cart", controllerPool.CartController.GetCartInformation)
+	app.POST("api/cart", controllerPool.CartController.AddItemToCart)
 
 	// Product-related endpoints
 	app.GET("api/product", controllerPool.ProductController.GetAllProducts)

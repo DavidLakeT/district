@@ -1,6 +1,7 @@
 package service
 
 import (
+	request "district/controller/request"
 	"district/model"
 	repository "district/repository/handler"
 	"encoding/base64"
@@ -29,11 +30,52 @@ func (cs *CartService) GetCartInformation(cartToken string) (*float64, *model.Ca
 	return total, &cart, nil
 }
 
+func (cs *CartService) AddItemToCart(cartToken string, request request.AddCartItemRequest) (*string, error) {
+	cart, err := cs.decodeCartCookie(cartToken)
+	if err != nil {
+		return nil, err
+	}
+
+	itemExists := false
+	for i, existingItem := range cart {
+		if existingItem.ProductID == *request.ProductID {
+			if existingItem.Price != *request.Price {
+				cart[i].Price = *request.Price
+			}
+			cart[i].Quantity += *request.Quantity
+			if cart[i].Quantity == 0 {
+				cart = append(cart[:i], cart[i+1:]...)
+			}
+			itemExists = true
+			break
+		}
+	}
+
+	if !itemExists {
+		item := model.CartItem{
+			ProductID: *request.ProductID,
+			Quantity:  *request.Quantity,
+			Price:     *request.Price,
+		}
+
+		cart = append(cart, item)
+	}
+
+	encodedCart, err := json.Marshal(cart)
+	if err != nil {
+		return nil, err
+	}
+
+	encodedToken := base64.StdEncoding.EncodeToString(encodedCart)
+
+	return &encodedToken, nil
+}
+
 func (cs *CartService) getCartTotal(cart *model.Cart) (*float64, error) {
 	var total float64
 
 	for _, item := range *cart {
-		total += item.Cost * float64(item.Quantity)
+		total += item.Price * float64(item.Quantity)
 	}
 
 	return &total, nil
