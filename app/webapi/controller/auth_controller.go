@@ -3,6 +3,7 @@ package controller
 import (
 	request "district/controller/request"
 	service "district/service/handler"
+	"encoding/base64"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -35,10 +36,17 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 	}
 
 	c.SetCookie(&http.Cookie{
-		Name:     "auth_token",
-		Value:    token,
-		HttpOnly: true,
-		Path:     "/",
+		Name:  "auth_token",
+		Value: token,
+		Path:  "/",
+	})
+
+	cartCookie := []byte("[]")
+	encodedCartCookie := base64.StdEncoding.EncodeToString(cartCookie)
+	c.SetCookie(&http.Cookie{
+		Name:  "cart_token",
+		Value: encodedCartCookie,
+		Path:  "/",
 	})
 
 	return c.JSON(http.StatusFound, map[string]interface{}{
