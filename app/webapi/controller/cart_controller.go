@@ -16,6 +16,34 @@ func NewCartController(servicePool *service.ServicePool) *CartController {
 	return &CartController{servicePool: servicePool}
 }
 
+func (cc *CartController) PlaceOrder(c echo.Context) error {
+	authToken, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to place an order.",
+		})
+	}
+
+	cartToken, err := c.Cookie("cart_token")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing or invalid cart token.",
+		})
+	}
+
+	remainingBalance, err := cc.servicePool.CartService.PlaceOrder(authToken.Value, cartToken.Value)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":           "order succesfully placed.",
+		"remaining_balance": remainingBalance,
+	})
+}
+
 func (cc *CartController) GetCartInformation(c echo.Context) error {
 	_, err := c.Cookie("auth_token")
 	if err != nil {
