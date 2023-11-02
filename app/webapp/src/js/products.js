@@ -14,7 +14,9 @@ export const fetchProducts = async () => {
 
 export const createProduct = async (productData) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/product`, productData);
+    const response = await axios.post(`${BASE_URL}/api/product`, productData, {
+      withCredentials: true
+    });
     return response.data;
   } catch (error) {
     console.error('Error creating product:', error);
