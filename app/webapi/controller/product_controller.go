@@ -40,7 +40,7 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 	if err := c.Bind(&request); err != nil {
 		fmt.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"error": "invalid product information",
+			"error": "invalid product information.",
 		})
 	}
 
@@ -51,7 +51,14 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 		Price:       request.Price,
 	}
 
-	if err := pc.servicePool.ProductService.CreateProduct(&product); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to create a product.",
+		})
+	}
+
+	if err := pc.servicePool.ProductService.CreateProduct(token.Value, &product); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
@@ -71,7 +78,7 @@ func (pc *ProductController) SearchProductsById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"error": "invalid product ID",
+			"error": "invalid product ID.",
 		})
 	}
 
@@ -106,18 +113,25 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"error": "invalid product ID",
+			"error": "invalid product ID.",
+		})
+	}
+
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update a product.",
 		})
 	}
 
 	var request request.UpdateProductRequest
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"error": "invalid request payload",
+			"error": "invalid request payload.",
 		})
 	}
 
-	err = pc.servicePool.ProductService.UpdateProduct(id, &request)
+	err = pc.servicePool.ProductService.UpdateProduct(token.Value, id, &request)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
@@ -133,11 +147,18 @@ func (pc *ProductController) DeleteProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"error": "invalid product ID",
+			"error": "invalid product ID.",
 		})
 	}
 
-	err = pc.servicePool.ProductService.DeleteProduct(id)
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to delete a product.",
+		})
+	}
+
+	err = pc.servicePool.ProductService.DeleteProduct(token.Value, id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),

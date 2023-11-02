@@ -21,9 +21,16 @@ func NewUserController(servicePool *service.ServicePool) *UserController {
 // Endpoint: GET /api/user
 // - Retrieves information about all users (identification, email, balance, isAdmin).
 func (uc *UserController) GetAllUsers(c echo.Context) error {
-	users, err := uc.servicePool.UserService.GetAllUsers()
+	token, err := c.Cookie("auth_token")
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to check this information",
+		})
+	}
+
+	users, err := uc.servicePool.UserService.GetAllUsers(token.Value)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
@@ -56,7 +63,14 @@ func (uc *UserController) GetUserById(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	user, err := uc.servicePool.UserService.GetUserByIdentification(identification)
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to check this information",
+		})
+	}
+
+	user, err := uc.servicePool.UserService.GetUserByIdentification(token.Value, identification)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{"error": err.Error()})
 	}
@@ -72,12 +86,19 @@ func (uc *UserController) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update an user",
+		})
+	}
+
 	var request request.UpdateUserRequest
 	if err := c.Bind(&request); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user information"})
 	}
 
-	if err := uc.servicePool.UserService.UpdateUser(identification, &request); err != nil {
+	if err := uc.servicePool.UserService.UpdateUser(token.Value, identification, &request); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 
@@ -92,7 +113,14 @@ func (uc *UserController) DeleteUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{"error": "Invalid user ID"})
 	}
 
-	if err := uc.servicePool.UserService.DeleteUserByIdentification(identification); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update an user",
+		})
+	}
+
+	if err := uc.servicePool.UserService.DeleteUserByIdentification(token.Value, identification); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
 	}
 

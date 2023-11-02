@@ -3,7 +3,6 @@ package service
 import (
 	repository "district/repository/handler"
 	"encoding/base64"
-	"errors"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
@@ -20,11 +19,11 @@ func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
 func (as *AuthService) Login(email, password string) (string, error) {
 	user, err := as.repositoryPool.UserRepository.GetUserByEmail(email)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("there is no account with the email address you provided.")
 	}
 
 	if !CheckPasswordHash(password, user.Password) {
-		return "", errors.New("wrong credentials")
+		return "", fmt.Errorf("your password doesn't match. Please try again.")
 	}
 
 	token := fmt.Sprintf("%d:%s:%s:%v", user.Identification, user.Username, user.Email, user.IsAdmin)
