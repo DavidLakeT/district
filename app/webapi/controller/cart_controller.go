@@ -49,6 +49,7 @@ func (cc *CartController) PlaceOrder(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":           "order succesfully placed.",
+		"cart_token":        encodedCartCookie,
 		"remaining_balance": remainingBalance,
 	})
 }
