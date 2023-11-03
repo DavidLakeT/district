@@ -35,7 +35,6 @@ export const placeOrder = async () => {
   } catch (error) {
     console.error('Error placing order:', error);
     throw error;
-    //return [];
   }
 };
 

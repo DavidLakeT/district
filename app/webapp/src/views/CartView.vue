@@ -10,9 +10,6 @@
       <div class="col-md-4">
         <order-summary :cart="cart.cart" :total-price="cart.total_price" />
         <button @click="placeOrder" class="btn btn-primary mt-4">Place Order</button>
-        <!--<div v-if="orderStatus" class="mt-2 alert" :class="orderStatus ? 'alert-success' : 'alert-danger'">
-          {{ orderMessage }}
-        </div>-->
         <div v-if="orderCreated" class="alert alert-success mt-2">Order Successfully placed</div>
         <div v-if="orderError" class="alert alert-danger mt-2">There is not enough balance on your account</div>
       </div>
