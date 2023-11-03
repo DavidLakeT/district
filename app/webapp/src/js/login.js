@@ -29,7 +29,7 @@ export default {
         if (response.status === 302 || response.data.auth_token) {
           this.$root.authToken = response.data.auth_token;
           document.cookie = `auth_token=${response.data.auth_token}; path=/;`;
-          
+          document.cookie = `cart_token=${response.data.cart_token}; path=/;`;
           const user = decodeAuthToken(response.data.auth_token);
           if (user) {
             store.commit('auth/setAuthToken', response.data.auth_token);

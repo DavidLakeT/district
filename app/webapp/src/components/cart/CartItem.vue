@@ -1,18 +1,33 @@
 <template>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <span class="product-name">{{ item.product.name }}</span>
-      <span class="badge badge-primary badge-pill quantity-badge">{{ item.quantity }}</span>
-    </li>
-  </template>
-  
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <span class="product-name">{{ productName }}</span>
+    <span class="text-dark">{{ item.quantity }}</span>
+  </li>
+</template>
+
 <script>
-  export default {
-    props: {
-      item: {
-        type: Object,
-        required: true,
-      },
+import { fetchProductDetails } from '@/js/products';
+
+export default {
+  props: {
+    item: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+  data() {
+    return {
+      productName: null,
+    };
+  },
+  async created() {
+    if (this.item.product_id) {
+      const productDetails = await fetchProductDetails(this.item.product_id);
+      this.productName = productDetails.name;
+    }
+  },
+};
 </script>
-  
+
+
+
