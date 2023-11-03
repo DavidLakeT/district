@@ -14,14 +14,19 @@
 </template>
 
 <script>
+import { addCartItem } from '@/js/cart.js'
 export default {
   props: {
     product: Object,
   },
   methods: {
-    addToCart() {
-      console.log(`Added ${this.quantity} ${this.product.name} to cart`);
-    },
+    async addToCart(){
+        const productData = { product_id: this.product.id, quantity: 1, price: this.product.price };
+        const response = await addCartItem(productData);
+        if (response) {
+          this.$router.push('/mycart');
+        }
+    }
   },
 };
 </script>
