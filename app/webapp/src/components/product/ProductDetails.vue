@@ -15,7 +15,6 @@
 
 <script>
 import { addCartItem } from '@/js/cart.js'
-import router from '@/router';
 export default {
   props: {
     product: Object,
@@ -25,7 +24,7 @@ export default {
         const productData = { product_id: this.product.id, quantity: 1, price: this.product.price };
         const response = await addCartItem(productData);
         if (response) {
-          router.push('/products')
+          this.$router.push('/mycart');
         }
     }
   },

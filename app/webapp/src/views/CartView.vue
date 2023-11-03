@@ -9,7 +9,7 @@
       </div>
       <div class="col-md-4">
         <order-summary :cart="cart.cart" :total-price="cart.total_price" />
-        <button @click="placeOrder" class="btn btn-primary mt-2">Place Order</button>
+        <button @click="placeOrder" class="btn btn-primary mt-4">Place Order</button>
       </div>
     </div>
   </div>
@@ -19,7 +19,6 @@
 import CartItem from '@/components/cart/CartItem.vue';
 import OrderSummary from '@/components/cart/OrderSummary.vue';
 import { getCartInformation, placeOrder, updateProductQuantity, removeItemFromCart } from '@/js/cart.js';
-import router from '@/router';
 
 export default {
   name: "MyCart",
@@ -43,7 +42,7 @@ export default {
       try {
         const response = await placeOrder();
         if (response) {
-          router.push('/products');
+          this.$router.push('/mycart');
         }
       } catch (error) {
         console.error('Error placing order:', error);
@@ -54,7 +53,7 @@ export default {
         const cartItemData = { product_id: itemId, quantity: newQuantity };
         const response = await updateProductQuantity(cartItemData);
         if (response) {
-          router.push('/cart');
+          window.location.reload();
         }
       } catch (error) {
         console.error('Error updating product quantity:', error);
@@ -65,7 +64,7 @@ export default {
         const productID = itemId;
         const response = await removeItemFromCart(productID);
         if (response) {
-          router.push('/cart');
+          window.location.reload();
         }
       } catch (error) {
         console.error('Error removing item from the cart:', error);
