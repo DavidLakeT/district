@@ -10,6 +10,11 @@
       <div class="col-md-4">
         <order-summary :cart="cart.cart" :total-price="cart.total_price" />
         <button @click="placeOrder" class="btn btn-primary mt-4">Place Order</button>
+        <!--<div v-if="orderStatus" class="mt-2 alert" :class="orderStatus ? 'alert-success' : 'alert-danger'">
+          {{ orderMessage }}
+        </div>-->
+        <div v-if="orderCreated" class="alert alert-success mt-2">Order Successfully placed</div>
+        <div v-if="orderError" class="alert alert-danger mt-2">There is not enough balance on your account</div>
       </div>
     </div>
   </div>
@@ -32,6 +37,8 @@ export default {
         cart: [], 
         total_price: 0, 
       },
+      orderCreated: false,
+      orderError: false,
     };
   },
   async created() {
@@ -40,12 +47,12 @@ export default {
   methods: {
     async placeOrder() {
       try {
-        const response = await placeOrder();
-        if (response) {
-          this.$router.push('/mycart');
-        }
+        await placeOrder();
+        this.orderCreated = true;
+        this.orderError = false;
       } catch (error) {
-        console.error('Error placing order:', error);
+        this.orderError = true;
+        this.orderCreated = false;
       }
     },
     async updateQuantity(itemId, newQuantity) {
