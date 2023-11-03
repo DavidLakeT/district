@@ -3,6 +3,7 @@ package controller
 import (
 	request "district/controller/request"
 	service "district/service/handler"
+	"encoding/base64"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -37,6 +38,14 @@ func (cc *CartController) PlaceOrder(c echo.Context) error {
 			"error": err.Error(),
 		})
 	}
+
+	cartCookie := []byte("[]")
+	encodedCartCookie := base64.StdEncoding.EncodeToString(cartCookie)
+	c.SetCookie(&http.Cookie{
+		Name:  "cart_token",
+		Value: encodedCartCookie,
+		Path:  "/",
+	})
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":           "order succesfully placed.",
