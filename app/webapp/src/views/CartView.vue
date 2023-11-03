@@ -45,6 +45,7 @@ export default {
     async placeOrder() {
       try {
         await placeOrder();
+        window.location.reload()
         this.orderCreated = true;
         this.orderError = false;
       } catch (error) {

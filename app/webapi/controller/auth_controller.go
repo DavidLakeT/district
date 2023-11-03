@@ -51,5 +51,6 @@ func (ac *AuthController) LoginUser(c echo.Context) error {
 
 	return c.JSON(http.StatusFound, map[string]interface{}{
 		"auth_token": token,
+		"cart_token": encodedCartCookie,
 	})
 }
