@@ -27,10 +27,16 @@ func main() {
 		log.Fatal(dbError)
 	}
 
+	authRepository := repository.NewAuthRepository(db)
 	productRepository := repository.NewProductRepository(db)
 	reviewRepository := repository.NewReviewRepository(db)
 	userRepository := repository.NewUserRepository(db)
-	repositoryPool := repositoryPool.NewRepositoryPool(productRepository, reviewRepository, userRepository)
+	repositoryPool := repositoryPool.NewRepositoryPool(
+		authRepository,
+		productRepository,
+		reviewRepository,
+		userRepository,
+	)
 
 	authService := service.NewAuthService(repositoryPool)
 	cartService := service.NewCartService(repositoryPool)
