@@ -7,6 +7,9 @@ import (
 	repository "district/repository/handler"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -132,7 +135,32 @@ func (ps *ProductService) UpdateProduct(token string, id int, request *controlle
 	return ps.repositoryPool.ProductRepository.UpdateProduct(product)
 }
 
-func (ps *ProductService) UploadProductPicture() error {
+func (ps *ProductService) GetProductPicture(filename string) (*os.File, error) {
+	file, err := os.Open("uploads/" + filename)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("file could not be read.")
+	}
+	return file, nil
+}
+
+func (ps *ProductService) UploadProductPicture(file *multipart.FileHeader) error {
+	src, err := file.Open()
+	if err != nil {
+		return fmt.Errorf("file could not be read.")
+	}
+
+	dst, err := os.Create("uploads/" + file.Filename)
+	if err != nil {
+		return fmt.Errorf("file could not be stored.")
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

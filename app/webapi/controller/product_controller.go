@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -145,7 +144,32 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 	})
 }
 
-// Endpoint: POST /api/product/upload
+// Endpoint: GET /api/product/picture?path=...
+// - Retrieves the product picture with the specified ID.
+func (pc *ProductController) GetProductPicture(c echo.Context) error {
+	filename := c.QueryParam("filename")
+
+	file, err := pc.servicePool.ProductService.GetProductPicture(filename)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	c.Response().Header().Set("Content-Disposition", "attachment; filename="+filename)
+	c.Response().Header().Set("Content-Type", c.Request().Header.Get("Content-Type"))
+
+	_, err = io.Copy(c.Response().Writer, file)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return nil
+}
+
+// Endpoint: POST /api/product/:id/upload
 // - Uploads the product picture to the /uploads folder.
 func (pc *ProductController) UploadProductPicture(c echo.Context) error {
 	file, err := c.FormFile("file")
@@ -155,27 +179,8 @@ func (pc *ProductController) UploadProductPicture(c echo.Context) error {
 		})
 	}
 
-	src, err := file.Open()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": "file could not be read.",
-		})
-	}
-
-	dst, err := os.Create("uploads/" + file.Filename)
-	if err != nil {
-		fmt.Println(err)
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": "file could not be stored.",
-		})
-	}
-	defer dst.Close()
-
-	_, err = io.Copy(dst, src)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": err.Error(),
-		})
+	if err := pc.servicePool.ProductService.UploadProductPicture(file); err != nil {
+		return err
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
