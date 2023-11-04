@@ -5,7 +5,9 @@ import (
 	models "district/model"
 	service "district/service/handler"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -138,7 +140,47 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "product successfully updated."})
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "product successfully updated.",
+	})
+}
+
+// Endpoint: POST /api/product/upload
+// - Uploads the product picture to the /uploads folder.
+func (pc *ProductController) UploadProductPicture(c echo.Context) error {
+	file, err := c.FormFile("file")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing file in request.",
+		})
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "file could not be read.",
+		})
+	}
+
+	dst, err := os.Create("uploads/" + file.Filename)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "file could not be stored.",
+		})
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "file uploaded succesfully.",
+	})
 }
 
 // Endpoint: DELETE /api/product/:id

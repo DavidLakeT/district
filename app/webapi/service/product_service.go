@@ -132,6 +132,10 @@ func (ps *ProductService) UpdateProduct(token string, id int, request *controlle
 	return ps.repositoryPool.ProductRepository.UpdateProduct(product)
 }
 
+func (ps *ProductService) UploadProductPicture() error {
+	return nil
+}
+
 func (ps *ProductService) DeleteProduct(token string, id int) error {
 	decodedToken, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {

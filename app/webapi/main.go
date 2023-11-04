@@ -96,6 +96,7 @@ func main() {
 	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)
 	app.GET("api/product/name/:name", controllerPool.ProductController.SearchProductsByName)
 	app.POST("api/product", controllerPool.ProductController.CreateProduct)
+	app.POST("api/product/upload", controllerPool.ProductController.UploadProductPicture)
 	app.PUT("api/product/id/:id", controllerPool.ProductController.UpdateProduct)
 	app.DELETE("api/product/id/:id", controllerPool.ProductController.DeleteProduct)
 
