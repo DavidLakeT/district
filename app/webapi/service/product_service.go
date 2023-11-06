@@ -144,7 +144,22 @@ func (ps *ProductService) GetProductPicture(filename string) (*os.File, error) {
 	return file, nil
 }
 
-func (ps *ProductService) UploadProductPicture(file *multipart.FileHeader) error {
+func (ps *ProductService) UploadProductPicture(token string, file *multipart.FileHeader) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if !is_admin {
+		return fmt.Errorf("you have to be an administrator to update product picture.")
+	}
+
 	src, err := file.Open()
 	if err != nil {
 		return fmt.Errorf("file could not be read.")

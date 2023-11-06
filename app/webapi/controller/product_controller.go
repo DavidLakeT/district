@@ -179,7 +179,14 @@ func (pc *ProductController) UploadProductPicture(c echo.Context) error {
 		})
 	}
 
-	if err := pc.servicePool.ProductService.UploadProductPicture(file); err != nil {
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update a product picture.",
+		})
+	}
+
+	if err := pc.servicePool.ProductService.UploadProductPicture(token.Value, file); err != nil {
 		return err
 	}
 
