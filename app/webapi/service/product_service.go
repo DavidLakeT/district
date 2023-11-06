@@ -7,6 +7,9 @@ import (
 	repository "district/repository/handler"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -130,6 +133,50 @@ func (ps *ProductService) UpdateProduct(token string, id int, request *controlle
 	}
 
 	return ps.repositoryPool.ProductRepository.UpdateProduct(product)
+}
+
+func (ps *ProductService) GetProductPicture(filename string) (*os.File, error) {
+	file, err := os.Open("uploads/" + filename)
+	if err != nil {
+		fmt.Println(err)
+		return nil, fmt.Errorf("file could not be read.")
+	}
+	return file, nil
+}
+
+func (ps *ProductService) UploadProductPicture(token string, file *multipart.FileHeader) error {
+	decodedToken, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	tokenValues := strings.Split(string(decodedToken), ":")
+	is_admin, err := strconv.ParseBool(tokenValues[3])
+	if err != nil {
+		return fmt.Errorf("your session token is not valid.")
+	}
+
+	if !is_admin {
+		return fmt.Errorf("you have to be an administrator to update product picture.")
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		return fmt.Errorf("file could not be read.")
+	}
+
+	dst, err := os.Create("uploads/" + file.Filename)
+	if err != nil {
+		return fmt.Errorf("file could not be stored.")
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (ps *ProductService) DeleteProduct(token string, id int) error {

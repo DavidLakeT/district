@@ -5,6 +5,7 @@ import (
 	models "district/model"
 	service "district/service/handler"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -138,7 +139,60 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"message": "product successfully updated."})
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "product successfully updated.",
+	})
+}
+
+// Endpoint: GET /api/product/picture?path=...
+// - Retrieves the product picture with the specified ID.
+func (pc *ProductController) GetProductPicture(c echo.Context) error {
+	filename := c.QueryParam("filename")
+
+	file, err := pc.servicePool.ProductService.GetProductPicture(filename)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	c.Response().Header().Set("Content-Disposition", "attachment; filename="+filename)
+	c.Response().Header().Set("Content-Type", c.Request().Header.Get("Content-Type"))
+
+	_, err = io.Copy(c.Response().Writer, file)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+
+	return nil
+}
+
+// Endpoint: POST /api/product/:id/upload
+// - Uploads the product picture to the /uploads folder.
+func (pc *ProductController) UploadProductPicture(c echo.Context) error {
+	file, err := c.FormFile("file")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": "missing file in request.",
+		})
+	}
+
+	token, err := c.Cookie("auth_token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"error": "you must be logged in to update a product picture.",
+		})
+	}
+
+	if err := pc.servicePool.ProductService.UploadProductPicture(token.Value, file); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "file uploaded succesfully.",
+	})
 }
 
 // Endpoint: DELETE /api/product/:id

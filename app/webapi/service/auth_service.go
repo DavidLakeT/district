@@ -4,8 +4,6 @@ import (
 	repository "district/repository/handler"
 	"encoding/base64"
 	"fmt"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
@@ -17,27 +15,14 @@ func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
 }
 
 func (as *AuthService) Login(email, password string) (string, error) {
-	user, err := as.repositoryPool.UserRepository.GetUserByEmail(email)
+	user, err := as.repositoryPool.AuthRepository.VerifyLogin(email, password)
 	if err != nil {
-		return "", fmt.Errorf("there is no account with the email address you provided.")
-	}
-
-	if !CheckPasswordHash(password, user.Password) {
-		return "", fmt.Errorf("your password doesn't match. Please try again.")
+		fmt.Println("error:", err)
+		return "", fmt.Errorf("there is no account with the credentials you provided.")
 	}
 
 	token := fmt.Sprintf("%d:%s:%s:%v", user.Identification, user.Username, user.Email, user.IsAdmin)
 	encodedToken := base64.StdEncoding.EncodeToString([]byte(token))
 
 	return encodedToken, nil
-}
-
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	return string(bytes), err
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }

@@ -27,10 +27,16 @@ func main() {
 		log.Fatal(dbError)
 	}
 
+	authRepository := repository.NewAuthRepository(db)
 	productRepository := repository.NewProductRepository(db)
 	reviewRepository := repository.NewReviewRepository(db)
 	userRepository := repository.NewUserRepository(db)
-	repositoryPool := repositoryPool.NewRepositoryPool(productRepository, reviewRepository, userRepository)
+	repositoryPool := repositoryPool.NewRepositoryPool(
+		authRepository,
+		productRepository,
+		reviewRepository,
+		userRepository,
+	)
 
 	authService := service.NewAuthService(repositoryPool)
 	cartService := service.NewCartService(repositoryPool)
@@ -89,7 +95,9 @@ func main() {
 	app.GET("api/product", controllerPool.ProductController.GetAllProducts)
 	app.GET("api/product/id/:id", controllerPool.ProductController.SearchProductsById)
 	app.GET("api/product/name/:name", controllerPool.ProductController.SearchProductsByName)
+	app.GET("/api/product/picture", controllerPool.ProductController.GetProductPicture)
 	app.POST("api/product", controllerPool.ProductController.CreateProduct)
+	app.POST("api/product/upload", controllerPool.ProductController.UploadProductPicture)
 	app.PUT("api/product/id/:id", controllerPool.ProductController.UpdateProduct)
 	app.DELETE("api/product/id/:id", controllerPool.ProductController.DeleteProduct)
 

@@ -61,9 +61,9 @@ func (r *UserRepository) GetAllUsers() ([]*model.User, error) {
 }
 
 func (r *UserRepository) GetUserByEmail(email string) (*model.User, error) {
-	query := "SELECT identification, email, username, password, address, balance, deleted_at, is_admin FROM users WHERE email = $1"
+	query := fmt.Sprintf("SELECT identification, email, username, password, address, balance, deleted_at, is_admin FROM users WHERE email = %s", email)
 	user := &model.User{}
-	err := r.db.QueryRow(query, email).Scan(
+	err := r.db.QueryRow(query).Scan(
 		&user.Identification,
 		&user.Email,
 		&user.Username,

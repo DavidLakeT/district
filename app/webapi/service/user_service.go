@@ -49,11 +49,6 @@ func (us *UserService) GetAllUsers(token string) ([]*dto.UserDTO, error) {
 }
 
 func (us *UserService) CreateUser(request *controller.CreateUserRequest) (*dto.UserDTO, error) {
-	hashedPassword, err := HashPassword(request.Password)
-	if err != nil {
-		return nil, err
-	}
-
 	admin := false
 	if request.IsAdmin != nil {
 		admin = *request.IsAdmin
@@ -63,12 +58,12 @@ func (us *UserService) CreateUser(request *controller.CreateUserRequest) (*dto.U
 		Identification: request.Identification,
 		Email:          request.Email,
 		Username:       request.Username,
-		Password:       hashedPassword,
+		Password:       request.Password,
 		Address:        request.Address,
 		IsAdmin:        admin,
 	}
 
-	err = us.repositoryPool.UserRepository.CreateUser(&user)
+	err := us.repositoryPool.UserRepository.CreateUser(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -136,11 +131,7 @@ func (us *UserService) UpdateUser(token string, identification int, request *con
 		user.Username = *request.Username
 	}
 	if request.Password != nil {
-		hashedPassword, err := HashPassword(*request.Password)
-		if err != nil {
-			return err
-		}
-		user.Password = hashedPassword
+		user.Password = *request.Password
 	}
 	if request.Address != nil {
 		user.Address = *request.Address
