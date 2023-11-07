@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-6">
-        <img :src="imageUrl" alt="Product Image" class="img-fluid" />
+        <ImageLoader :productId="this.$route.params.id" class="img-fluid" />
       </div>
       <div class="col-md-6">
         <product-details :product="product" />
@@ -16,6 +16,7 @@
 <script>
 import ProductDetails from '@/components/product/ProductDetails.vue';
 import ProductReviews from '@/components/product/ProductReviews.vue';
+import ImageLoader from '@/components/common/ImageLoader.vue';
 import { fetchProductDetails } from '@/js/products.js';
 
 export default {
@@ -23,17 +24,13 @@ export default {
   components: {
     ProductDetails,
     ProductReviews,
+    ImageLoader,
   },
   data() {
     return {
-      product: {},
+      product: {}, 
       reviews: [],
     };
-  },
-  computed: {
-    imageUrl() {
-      return `/images/product${this.$route.params.id}.jpg`;
-    },
   },
   async created() {
     try {

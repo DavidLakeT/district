@@ -6,7 +6,7 @@
       <router-view />
     </div>
     <router-view v-else />
-    <Footer />
+    <Footer v-if="!userRole || !isAuthenticated" />
   </div>
 </template>
 

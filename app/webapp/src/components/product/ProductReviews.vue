@@ -14,7 +14,6 @@
       </li>
     </ul>
 
-    <!-- Form to add a new review -->
     <form @submit.prevent="submitReview" v-if="showReviewForm" class="mt-3">
       <div class="form-group">
         <input hidden type="text" v-model="newReview.author" class="form-control" id="author">

@@ -24,23 +24,23 @@
     },
     methods: {
       async loadUsers() {
-        this.users = await getUsers(); // Implement the getUsers function to fetch user data
+        this.users = await getUsers(); 
       },
       async updateUser(user) {
-        const response = await updateUser(user, user.identification); // Implement the updateUser function
+        const response = await updateUser(user, user.identification); 
         if (response) {
-          // Handle success
+          //  success
         } else {
-          // Handle error
+          //  error
         }
       },
       async deleteUser(userId) {
-        const response = await deleteUser(userId); // Implement the deleteUser function
+        const response = await deleteUser(userId); 
         if (response) {
-          // Handle success
-          this.loadUsers(); // Refresh user data after deletion
+          //  success
+          this.loadUsers();
         } else {
-          // Handle error
+          //  error
         }
       },
     },
