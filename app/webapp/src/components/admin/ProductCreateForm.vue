@@ -13,9 +13,12 @@
       <input type="number" v-model="price" class="form-control" id="price" required>
     </div>
     <div class="form-group">
-      <label for="image">Image:</label>
-      <input type="file" accept="image/*" @change="handleImageUpload" id="image">
+      <label for="image">Image (JPG only):</label>
+      <div class="custom-file">
+        <input type="file" class="form-control-file" accept=".jpg" @change="handleImageUpload" id="image">
+      </div>
     </div>
+    
     <button type="submit" class="btn btn-primary">Create Product</button>
   </form>
   <div v-if="productCreated" class="alert alert-success mt-2">Product created successfully!</div>

@@ -4,7 +4,7 @@ const BASE_URL = 'http://localhost:5000/api/product';
 
 export const getProductImage = async (productId) => {
     try {
-      const response = await axios.get(`${BASE_URL}/picture?filename=${productId}.jpeg`, {
+      const response = await axios.get(`${BASE_URL}/picture?filename=${productId}.jpg`, {
         withCredentials: true,
         responseType: 'blob', 
       });
