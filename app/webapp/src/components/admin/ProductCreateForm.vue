@@ -62,7 +62,6 @@ export default {
         this.price = "";
         this.imageFile = null;
       } catch (error) {
-        console.error('Error creating product:', error);
         this.productError = true;
         this.productCreated = false;
       }

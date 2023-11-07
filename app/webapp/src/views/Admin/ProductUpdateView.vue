@@ -37,7 +37,7 @@
         this.product = product;
         this.reviews = product.reviews;
       } catch (error) {
-        //console.error('Error fetching product data:', error);
+        // error
       }
     },
   };

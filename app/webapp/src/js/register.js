@@ -17,7 +17,7 @@ export default {
       try {
         const isAdmin = false;
         const identificationInt = parseInt(this.identification, 10);
-        const response = await axios.post('http://localhost:5000/api/user', {
+        await axios.post('http://localhost:5000/api/user', {
           identification: identificationInt,
           email: this.email,
           username: this.username,
@@ -25,7 +25,6 @@ export default {
           address: this.address,
           is_admin: isAdmin
         });
-        console.log('User registered:', response.data);
         this.$router.push('/login');
       } catch (error) {
         console.error('Error registering user:', error);

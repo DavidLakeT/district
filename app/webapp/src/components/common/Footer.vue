@@ -6,8 +6,8 @@
         <li class="list-inline-item"><a href="#" class="text-light">Terms of Use</a></li>
         <li class="list-inline-item"><a href="#" class="text-light">Privacy Policy</a></li>
         <li class="list-inline-item"><a href="#" class="text-light">Contact Us</a></li>
-        <li class="list-inline-item"><a href="#" class="text-light">About Us</a></li> <!-- Additional link -->
-        <li class="list-inline-item"><a href="#" class="text-light">FAQ</a></li> <!-- Additional link -->
+        <li class="list-inline-item"><a href="#" class="text-light">About Us</a></li>
+        <li class="list-inline-item"><a href="#" class="text-light">FAQ</a></li> 
       </ul>
     </div>
   </footer>
