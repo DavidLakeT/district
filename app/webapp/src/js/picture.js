@@ -2,15 +2,14 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000/api/product';
 
-export const getProductImage = async (productNameId) => {
+export const getProductImage = async (productId) => {
     try {
-      const response = await axios.get(`${BASE_URL}/picture?path=${productNameId}`, {
+      const response = await axios.get(`${BASE_URL}/picture?filename=${productId}.jpeg`, {
         withCredentials: true,
         responseType: 'blob', 
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching product image:', error);
       return null;
     }
   };
