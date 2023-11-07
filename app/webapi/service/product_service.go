@@ -42,23 +42,28 @@ func (ps *ProductService) GetAllProducts() ([]*dto.ProductDTO, error) {
 	return productDTOs, nil
 }
 
-func (ps *ProductService) CreateProduct(token string, product *model.Product) error {
+func (ps *ProductService) CreateProduct(token string, product *model.Product) (*model.Product, error) {
 	decodedToken, err := base64.StdEncoding.DecodeString(token)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	tokenValues := strings.Split(string(decodedToken), ":")
 	is_admin, err := strconv.ParseBool(tokenValues[3])
 	if err != nil {
-		return fmt.Errorf("your session token is not valid.")
+		return nil, fmt.Errorf("your session token is not valid.")
 	}
 
 	if !is_admin {
-		return fmt.Errorf("you have to be an administrator to create products.")
+		return nil, fmt.Errorf("you have to be an administrator to create products.")
 	}
 
-	return ps.repositoryPool.ProductRepository.CreateProduct(product)
+	product, err = ps.repositoryPool.ProductRepository.CreateProduct(product)
+	if err != nil {
+		return nil, fmt.Errorf("there was an error creating the product: %v", err)
+	}
+
+	return product, nil
 }
 
 func (ps *ProductService) GetProductById(id int) (*dto.ProductDTO, error) {
@@ -138,8 +143,7 @@ func (ps *ProductService) UpdateProduct(token string, id int, request *controlle
 func (ps *ProductService) GetProductPicture(filename string) (*os.File, error) {
 	file, err := os.Open("uploads/" + filename)
 	if err != nil {
-		fmt.Println(err)
-		return nil, fmt.Errorf("file could not be read.")
+		return nil, fmt.Errorf("file was not found.")
 	}
 	return file, nil
 }
