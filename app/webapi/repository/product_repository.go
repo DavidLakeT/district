@@ -14,14 +14,14 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) CreateProduct(product *model.Product) error {
-	query := "INSERT INTO products (name, description, stock, price) VALUES ($1, $2, $3, $4)"
-	_, err := r.db.Exec(query, product.Name, product.Description, product.Stock, product.Price)
+func (r *ProductRepository) CreateProduct(product *model.Product) (*model.Product, error) {
+	query := "INSERT INTO products (name, description, stock, price) VALUES ($1, $2, $3, $4) RETURNING id"
+	err := r.db.QueryRow(query, product.Name, product.Description, product.Stock, product.Price).Scan(&product.ID)
 	if err != nil {
-		return fmt.Errorf("failed to create product: %w", err)
+		return nil, fmt.Errorf("failed to create product: %w", err)
 	}
 
-	return nil
+	return product, nil
 }
 
 func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {

@@ -17,7 +17,6 @@ func NewAuthRepository(db *sql.DB) *AuthRepository {
 
 func (ar *AuthRepository) VerifyLogin(email, password string) (*model.User, error) {
 	query := fmt.Sprintf("SELECT * FROM users WHERE email = '%s' AND password = '%s'", email, password)
-	fmt.Println(query)
 	user := &model.User{}
 	err := ar.db.QueryRow(query).Scan(
 		&user.Identification,
@@ -38,7 +37,7 @@ func (ar *AuthRepository) VerifyLogin(email, password string) (*model.User, erro
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
 	if user.DeletedAt.Valid {
-		return nil, fmt.Errorf("user has been deleted")
+		return nil, fmt.Errorf("user has been deleted.")
 	}
 	return user, nil
 }

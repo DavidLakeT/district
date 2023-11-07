@@ -17,7 +17,6 @@ func NewAuthService(repositoryPool *repository.RepositoryPool) *AuthService {
 func (as *AuthService) Login(email, password string) (string, error) {
 	user, err := as.repositoryPool.AuthRepository.VerifyLogin(email, password)
 	if err != nil {
-		fmt.Println("error:", err)
 		return "", fmt.Errorf("there is no account with the credentials you provided.")
 	}
 

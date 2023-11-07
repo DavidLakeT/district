@@ -59,17 +59,19 @@ func (pc *ProductController) CreateProduct(c echo.Context) error {
 		})
 	}
 
-	if err := pc.servicePool.ProductService.CreateProduct(token.Value, &product); err != nil {
+	createdProduct, err := pc.servicePool.ProductService.CreateProduct(token.Value, &product)
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"name":        product.Name,
-		"description": product.Description,
-		"stock":       product.Stock,
-		"price":       product.Price,
+		"id":          createdProduct.ID,
+		"name":        createdProduct.Name,
+		"description": createdProduct.Description,
+		"stock":       createdProduct.Stock,
+		"price":       createdProduct.Price,
 	})
 }
 
@@ -144,7 +146,7 @@ func (pc *ProductController) UpdateProduct(c echo.Context) error {
 	})
 }
 
-// Endpoint: GET /api/product/picture?path=...
+// Endpoint: GET /api/product/picture?filename=...
 // - Retrieves the product picture with the specified ID.
 func (pc *ProductController) GetProductPicture(c echo.Context) error {
 	filename := c.QueryParam("filename")
@@ -187,7 +189,9 @@ func (pc *ProductController) UploadProductPicture(c echo.Context) error {
 	}
 
 	if err := pc.servicePool.ProductService.UploadProductPicture(token.Value, file); err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": err.Error(),
+		})
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
