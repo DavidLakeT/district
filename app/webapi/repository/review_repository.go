@@ -106,8 +106,8 @@ func (rr *ReviewRepository) DeleteReviewsByProductID(productID int) error {
 	return nil
 }
 
-func (r *ReviewRepository) CreateReviewsTable() error {
-	_, err := r.db.Exec(`
+func (rr *ReviewRepository) CreateReviewsTable() error {
+	_, err := rr.db.Exec(`
 		CREATE TABLE IF NOT EXISTS reviews (
 			id SERIAL PRIMARY KEY,
 			user_id INTEGER NOT NULL,

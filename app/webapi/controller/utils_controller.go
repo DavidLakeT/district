@@ -18,18 +18,6 @@ func NewUtilsController(servicePool *service.ServicePool) *UtilsController {
 // Endpoint: DELETE /api/database
 // Clears all the database (deleting tables).
 func (uc *UtilsController) ClearDatabase(c echo.Context) error {
-	/*
-		if err := uc.servicePool.ProductService.DeleteProductsTable(); err != nil {
-			return err
-		}
-		if err := uc.servicePool.ReviewService.DeleteReviewsTable(); err != nil {
-			return err
-		}
-		if err := uc.servicePool.UserService.DeleteUsersTable(); err != nil {
-			return err
-		}
-	*/
-
 	if err := uc.servicePool.UtilsService.ClearDatabase(); err != nil {
 		return err
 	}

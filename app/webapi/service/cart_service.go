@@ -187,7 +187,7 @@ func (cs *CartService) getCartTotal(cart *model.Cart) (*float64, error) {
 	return &total, nil
 }
 
-func (s *CartService) decodeCartCookie(cartToken string) (model.Cart, error) {
+func (cs *CartService) decodeCartCookie(cartToken string) (model.Cart, error) {
 	var cart model.Cart
 
 	decodedToken, err := base64.StdEncoding.DecodeString(cartToken)
