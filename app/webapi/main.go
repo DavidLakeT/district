@@ -114,6 +114,7 @@ func main() {
 	app.DELETE("api/user/:id", controllerPool.UserController.DeleteUser)
 
 	// Database-related endpoints
+	app.POST("api/database", controllerPool.UtilsController.PopulateDatabase)
 	app.DELETE("api/database", controllerPool.UtilsController.ClearDatabase)
 
 	app.Logger.Fatal(app.Start(":5000"))

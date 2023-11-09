@@ -1,0 +1,796 @@
+{
+	"info": {
+		"_postman_id": "0ea17634-dc9c-4814-a336-3c01bc503ca9",
+		"name": "District API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26447555"
+	},
+	"item": [
+		{
+			"name": "Authentication Requests",
+			"item": [
+				{
+					"name": "Authentication (Signup)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"identification\": 1,\r\n    \"email\": \"user@email.com\",\r\n    \"username\": \"user_username\",\r\n    \"password\": \"user_password\",\r\n    \"address\": \"user_address\",\r\n    \"is_admin\": false \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/user",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user"
+							]
+						},
+						"description": "This request allows users to sign up into the application by providing information like username, email, address, etc."
+					},
+					"response": []
+				},
+				{
+					"name": "Authentication (Login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user@email.com\",\r\n    \"password\": \"user_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "This request allows user to authenticate into the application and receive an auth token."
+					},
+					"response": []
+				}
+			],
+			"description": "These are the requests associated with user registration and login to the application."
+		},
+		{
+			"name": "Cart Requests",
+			"item": [
+				{
+					"name": "Get Cart Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/cart",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cart"
+							]
+						},
+						"description": "This request retrieves the information about the current user's cart.\n\n**Previous requirements:** `cart_token` cookie must be set."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Cart Item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 1,\r\n    \"quantity\": 5,\r\n    \"price\": 300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/cart",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cart"
+							]
+						},
+						"description": "This request updates the user's cart token to include the newly added product.\n\n**Previous requirements:** `cart_token` cookie must be set."
+					},
+					"response": []
+				},
+				{
+					"name": "Place Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/cart/order",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cart",
+								"order"
+							]
+						},
+						"description": "This request checks if the user has enough balance for placing the order and, if so, updates its balance.\n\n**Previous requirements:** `cart_token` and `auth_token` cookies must be set."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart Product Quantity",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 1,\r\n    \"quantity\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/cart",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cart"
+							]
+						},
+						"description": "This request updates the user's token to change the amount of one product present in the cart. If the new amount is zero or less, the product is removed.\n\n**Previous requirements:** `cart_token` and `auth_token` cookies must be set."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Cart Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/cart",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cart"
+							]
+						},
+						"description": "This request removes updates the user's cart token to remove an item from the user's cart.\n\n**Previous requirements:** `cart_token` and `auth_token` cookies must be set."
+					},
+					"response": []
+				}
+			],
+			"description": "These are the requests associated with user's cart."
+		},
+		{
+			"name": "Product Requests",
+			"item": [
+				{
+					"name": "Get All Products Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/product",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product"
+							]
+						},
+						"description": "This request retrieves the information about all existant products."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/product/id/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"id",
+								"1"
+							]
+						},
+						"description": "This request retrieves the information about an specific product searching by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Product by Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/product/id/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"id",
+								"1"
+							]
+						},
+						"description": "This request retrieves the information about specific product(s) searching by its name."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Picture",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/product/picture?filename=productid.jpg",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"picture"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "productid.jpg"
+								}
+							]
+						},
+						"description": "This request retrieves the product picture based on the query parameter \"filename\"."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"product_name\",\r\n    \"description\": \"product_description\",\r\n    \"stock\": 10,\r\n    \"price\": 300\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/product",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product"
+							]
+						},
+						"description": "This request creates a new product with the provided information."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Product Picture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:5000/api/product/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"upload"
+							]
+						},
+						"description": "This request allows admins to update a product's picture by uploading a .jpg file."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Aguacate\",\r\n    \"description\": \"Es un aguacate\",\r\n    \"stock\": 100,\r\n    \"price\": 500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/product/id/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"id",
+								"1"
+							]
+						},
+						"description": "This request updates a product's information based on the fields provided by the user."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/product/id/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"product",
+								"id",
+								"1"
+							]
+						},
+						"description": "This request deletes an existant product (and its associated reviews)."
+					},
+					"response": []
+				}
+			],
+			"description": "These are the requests associated with products."
+		},
+		{
+			"name": "Review Requests",
+			"item": [
+				{
+					"name": "Get Review Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/review/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"review",
+								"1"
+							]
+						},
+						"description": "This request retrieves the information about an specific review by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 1,\r\n    \"content\": \"review_content\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/review",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"review"
+							]
+						},
+						"description": "This request creates a new review associated with the product ID provided."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/review/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"review",
+								"1"
+							]
+						},
+						"description": "This request deletes an existant review by its ID."
+					},
+					"response": []
+				}
+			],
+			"description": "These are the requests associated with reviews."
+		},
+		{
+			"name": "User Requests",
+			"item": [
+				{
+					"name": "Get All Users Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/user",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user"
+							]
+						},
+						"description": "This request retrieves the information about all existant users."
+					},
+					"response": []
+				},
+				{
+					"name": "Search User by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify the response is exactly like the expected\", function () {\r",
+									"    var expectedResponse = {\r",
+									"        \"user\": {\r",
+									"            \"identification\": 1193132710,\r",
+									"            \"email\": \"djcardonan@eafit.edu.co\",\r",
+									"            \"username\": \"Davidzito\",\r",
+									"            \"address\": \"Envigado\",\r",
+									"            \"balance\": 0\r",
+									"        }\r",
+									"    };\r",
+									"\r",
+									"    pm.expect(pm.response.json()).to.deep.equal(expectedResponse);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5000/api/user/1193132710",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"1193132710"
+							]
+						},
+						"description": "This request retrieves an user's information searching by its ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify that the 'message' value is 'User successfully updated.'\", function () {\r",
+									"  var responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.message).to.equal('User successfully updated.');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"email\": \"djcardonan@eafit.edu.co\",\r\n        \"username\": \"David Happy\",\r\n        \"address\": \"Medellin\",\r\n        \"password\": \"test\",\r\n        \"balance\": 100.0,\r\n        \"is_admin\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/api/user/1193132710",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"1193132710"
+							]
+						},
+						"description": "This request updates user's information based on the fields provided by the user."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:5000/api/user/1",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"user",
+								"1"
+							]
+						},
+						"description": "This request deletes an existant user."
+					},
+					"response": []
+				}
+			],
+			"description": "These are the requests associated with users."
+		},
+		{
+			"name": "Clear Database",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/database",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"database"
+					]
+				},
+				"description": "This request re-creates all the tables on the database without any record. **This should be used only for debug purposes.**"
+			},
+			"response": []
+		}
+	]
+}

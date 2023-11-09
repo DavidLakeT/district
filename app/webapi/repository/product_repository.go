@@ -14,9 +14,9 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) CreateProduct(product *model.Product) (*model.Product, error) {
+func (pr *ProductRepository) CreateProduct(product *model.Product) (*model.Product, error) {
 	query := "INSERT INTO products (name, description, stock, price) VALUES ($1, $2, $3, $4) RETURNING id"
-	err := r.db.QueryRow(query, product.Name, product.Description, product.Stock, product.Price).Scan(&product.ID)
+	err := pr.db.QueryRow(query, product.Name, product.Description, product.Stock, product.Price).Scan(&product.ID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create product: %w", err)
 	}
@@ -24,8 +24,8 @@ func (r *ProductRepository) CreateProduct(product *model.Product) (*model.Produc
 	return product, nil
 }
 
-func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
-	rows, err := r.db.Query("SELECT * FROM products WHERE deleted_at IS NULL")
+func (pr *ProductRepository) GetAllProducts() ([]*model.Product, error) {
+	rows, err := pr.db.Query("SELECT * FROM products WHERE deleted_at IS NULL")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get products: %w", err)
 	}
@@ -58,9 +58,9 @@ func (r *ProductRepository) GetAllProducts() ([]*model.Product, error) {
 	return products, nil
 }
 
-func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
+func (pr *ProductRepository) GetProductByID(id int) (*model.Product, error) {
 	product := &model.Product{}
-	err := r.db.QueryRow("SELECT id, name, description, stock, price FROM products WHERE id = $1 AND deleted_at IS NULL", id).Scan(&product.ID, &product.Name, &product.Description, &product.Stock, &product.Price)
+	err := pr.db.QueryRow("SELECT id, name, description, stock, price FROM products WHERE id = $1 AND deleted_at IS NULL", id).Scan(&product.ID, &product.Name, &product.Description, &product.Stock, &product.Price)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("product with ID %d not found", id)
@@ -71,8 +71,8 @@ func (r *ProductRepository) GetProductByID(id int) (*model.Product, error) {
 	return product, nil
 }
 
-func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
-	rows, err := r.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
+func (pr *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
+	rows, err := pr.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get products: %w", err)
 	}
@@ -96,9 +96,9 @@ func (r *ProductRepository) GetProductsByName(name string) ([]*model.Product, er
 	return products, nil
 }
 
-func (r *ProductRepository) UpdateProduct(product *model.Product) error {
+func (pr *ProductRepository) UpdateProduct(product *model.Product) error {
 	query := "UPDATE products SET name = $1, description = $2, stock = $3, price = $4 WHERE id = $5 AND deleted_at IS NULL"
-	result, err := r.db.Exec(query, product.Name, product.Description, product.Stock, product.Price, product.ID)
+	result, err := pr.db.Exec(query, product.Name, product.Description, product.Stock, product.Price, product.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update product: %w", err)
 	}
@@ -115,8 +115,8 @@ func (r *ProductRepository) UpdateProduct(product *model.Product) error {
 	return nil
 }
 
-func (r *ProductRepository) DeleteProduct(id int) error {
-	result, err := r.db.Exec("UPDATE products SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", id)
+func (pr *ProductRepository) DeleteProduct(id int) error {
+	result, err := pr.db.Exec("UPDATE products SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", id)
 	if err != nil {
 		return fmt.Errorf("failed to delete product: %w", err)
 	}
@@ -133,8 +133,8 @@ func (r *ProductRepository) DeleteProduct(id int) error {
 	return nil
 }
 
-func (r *ProductRepository) CreateProductsTable() error {
-	_, err := r.db.Exec(`
+func (pr *ProductRepository) CreateProductsTable() error {
+	_, err := pr.db.Exec(`
 		CREATE TABLE IF NOT EXISTS products (
 			id SERIAL PRIMARY KEY,
 			name VARCHAR(60) NOT NULL,
@@ -153,8 +153,8 @@ func (r *ProductRepository) CreateProductsTable() error {
 	return nil
 }
 
-func (r *ProductRepository) DeleteProductsTable() error {
-	_, err := r.db.Exec("DROP TABLE IF EXISTS products CASCADE")
+func (pr *ProductRepository) DeleteProductsTable() error {
+	_, err := pr.db.Exec("DROP TABLE IF EXISTS products CASCADE")
 	if err != nil {
 		return fmt.Errorf("failed to delete products table: %w", err)
 	}
