@@ -72,6 +72,9 @@ func main() {
 	if err := utilsService.ClearDatabase(); err != nil {
 		log.Fatal(err)
 	}
+	if err := utilsService.PopulateDatabase(); err != nil {
+		log.Fatal(err)
+	}
 
 	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:8080", "http://localhost:8081"},
