@@ -72,7 +72,9 @@ func (pr *ProductRepository) GetProductByID(id int) (*model.Product, error) {
 }
 
 func (pr *ProductRepository) GetProductsByName(name string) ([]*model.Product, error) {
-	rows, err := pr.db.Query("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%' || $1 || '%' AND deleted_at IS NULL", name)
+	query := fmt.Sprintf("SELECT id, name, description, stock, price FROM products WHERE name LIKE '%s' AND deleted_at IS NULL", name)
+	rows, err := pr.db.Query(query)
+	fmt.Println(query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get products: %w", err)
 	}

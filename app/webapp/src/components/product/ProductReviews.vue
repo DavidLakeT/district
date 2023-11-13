@@ -8,7 +8,8 @@
         <div class="review-rating">
           <span v-for="star in review.rating" :key="star" class="star">&#9733;</span>
         </div>
-        <div class="review-text">{{ review.content }}</div>
+        <!--<div class="review-text">{{ review.content }}</div>-->
+        <div v-html="review.content"></div>
         <div class="review-date">{{ review.created_at }}</div>
         <button v-if="canDeleteReview(review.user_id)" @click="deleteRev(review.id)" class="btn btn-danger">Delete</button>
       </li>

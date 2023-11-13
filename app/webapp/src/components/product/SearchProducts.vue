@@ -1,7 +1,7 @@
 <template>
     <div class="search-product">
       <div class="input-group">
-        <input v-model="productName" type="text" class="form-control" placeholder="Search for a product..." @input="search" />
+        <input v-model="productName" type="text" class="form-control" placeholder="Search for a product..." />
         <button @click="search" class="btn btn-primary">Search</button>
       </div>
     </div>
