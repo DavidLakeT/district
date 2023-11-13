@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"net/url"
 
 	"github.com/labstack/echo/v4"
 )
@@ -99,8 +100,14 @@ func (pc *ProductController) SearchProductsById(c echo.Context) error {
 // - Retrieves information about the specified product (name, description, price, etc).
 func (pc *ProductController) SearchProductsByName(c echo.Context) error {
 	name := c.Param("name")
+	decodedName, err := url.QueryUnescape(name)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
 
-	products, err := pc.servicePool.ProductService.GetProductsByName(name)
+	products, err := pc.servicePool.ProductService.GetProductsByName(decodedName)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]interface{}{
 			"error": err.Error(),

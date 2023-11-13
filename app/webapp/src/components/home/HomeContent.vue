@@ -13,8 +13,8 @@
 
       <h3 class="mt-4">About District VulnWeb</h3>
       <p>
-        District VulnWeb was created as a part of an educational project to help individuals learn and practice cybersecurity skills.
-        This application is intentionally vulnerable, showcasing common security weaknesses found in web applications.
+        District VulnWeb was created as a part of an educational project to help individuals learn and practice cybersecurity skills. This application
+        was developed using modern technologies including Vue.js 3.3.8 and Go 1.21.4. This application is intentionally vulnerable, showcasing common security weaknesses found in web applications.
         Users are encouraged to explore the application, identify vulnerabilities, and learn how to mitigate them effectively.
       </p>
 
