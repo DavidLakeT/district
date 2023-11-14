@@ -1,11 +1,10 @@
-# Install Vue CLI globally (if not installed)
+# Fast setup
+#Install necessary depencies
 npm install -g @vue/cli
-
-# Create a new Vue project
-vue create your-project-name
-cd your-project-name
-vue add router
 npm install bootstrap
 npm install axios
 npm install vuex --save
-
+npm install mini-css-extract-plugin --save-dev
+npm install -g serve
+npm run build #Build the application
+serve -s dist -l 8080 #Run the application
