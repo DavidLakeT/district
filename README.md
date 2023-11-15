@@ -3,7 +3,7 @@
 - District VulnWeb
 
 - David José Cardona Nieves, djcardonan@eafit.edu.co
-- Julian Andrés Ramirez Jimenez, jaramirezj@eafit.edu.co
+- Julián Andrés Ramírez Jiménez, jaramirezj@eafit.edu.co
 ```
 
 ---
