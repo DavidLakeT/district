@@ -48,7 +48,7 @@ Generally speaking, **District** has as main components:
 We aim for a concise API design structure, comprising the following integral components:
 -   **Controllers:** Serving as the interface to external requests, controllers manage the accurate handling of incoming requests and generation of responses. They orchestrate interactions between services, ensuring the smooth execution of business logic and enhancing overall API responsiveness.
 -   **Services:** Positioned at the core, these components encapsulate crucial business logic, delivering essential functions to API consumers. This separation of concerns enhances code modularity, scalability, and overall codebase clarity.
--   **Repositories:** Responsible for executing CRUD operations on system models, seamlessly integrated with the Gorm ORM for efficient database interactions.
+-   **Repositories:** Responsible for the management and execution of CRUD operations in the system models. Also in charge of the setup of the tables in the database.
 
 ---
 
